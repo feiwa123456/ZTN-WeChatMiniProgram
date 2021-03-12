@@ -1,0 +1,91 @@
+
+.battery-icon.data-v-3d2d371b {
+	height: 20px;
+	line-height: 20px;
+	width: 34px;
+	-webkit-border-radius: 2px;
+	        border-radius: 2px;
+	top: -1px;
+	color: #fff;
+	text-align: center;
+	font-weight: normal;
+	font-size: 24rpx;
+	border: 1px solid #666666;
+	background: #fff;
+	display: inline-block;
+	position: relative;
+	vertical-align: middle;
+}
+.battery-icon.data-v-3d2d371b:before {
+	background: #666666;
+	content: "";
+	position: absolute;
+	width: 2px;
+	bottom: 2px;
+	right: -3px;
+	top: 2px;
+}
+.battery-icon.data-v-3d2d371b:after {
+	background: #fff;
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	top: 0;
+	right: 0;
+}
+.hundred-percent.data-v-3d2d371b:after {
+	background: #67c23a;
+}
+.fifty-percent.data-v-3d2d371b:after {
+	background: #fad361;
+}
+.ten-percent.data-v-3d2d371b:after {
+	background: #f56c6c;
+}
+.text.data-v-3d2d371b {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	z-index: 2;
+	-webkit-transform: translateX(-50%);
+	        transform: translateX(-50%)
+}
+.charge.data-v-3d2d371b {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	top: 0;
+	z-index: 1;
+	-webkit-animation:charging-data-v-3d2d371b 6s linear infinite var(--time);
+	        animation:charging-data-v-3d2d371b 6s linear infinite var(--time)
+}
+@-webkit-keyframes charging-data-v-3d2d371b {
+0% {
+		right: 34px;
+		background-color: #f56c6c;
+}
+50% {
+		right: 19px;
+		background-color: #fad361;
+}
+100% {
+		right: 0px;
+		background-color: #67c23a;
+}
+}
+@keyframes charging-data-v-3d2d371b {
+0% {
+		right: 34px;
+		background-color: #f56c6c;
+}
+50% {
+		right: 19px;
+		background-color: #fad361;
+}
+100% {
+		right: 0px;
+		background-color: #67c23a;
+}
+}
+

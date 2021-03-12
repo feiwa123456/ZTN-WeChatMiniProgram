@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "mescroll-uni": "/components/mescroll-uni/mescroll-uni",
+    "map-fav": "/components/ztn-custom/mapFav/mapFav",
+    "surplus": "/components/ztn-custom/surplus/surplus"
+  }
+}

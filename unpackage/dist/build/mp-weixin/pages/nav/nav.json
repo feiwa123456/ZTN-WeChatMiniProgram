@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "home-component": "/pages/home/home",
+    "map-component": "/pages/map/map",
+    "list-component": "/pages/list/list",
+    "center-component": "/pages/center/center",
+    "tabbar": "/components/ztn-custom/tabbar/tabbar"
+  }
+}

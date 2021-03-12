@@ -1,0 +1,1 @@
+<view><view class="cu-avatar round lg light" style="{{'width:'+(circleWidth+'rpx')+';'+('height:'+(circleHeight+'rpx')+';')+('background-color:'+(circleBgColor)+';')+('border:'+(circleBorder)+';')}}"><slot></slot></view></view>

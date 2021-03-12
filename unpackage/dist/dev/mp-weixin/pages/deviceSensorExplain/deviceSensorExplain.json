@@ -1,0 +1,8 @@
+{
+  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#ffffff",
+  "usingComponents": {
+    "circle-component": "/components/ztn-custom/circleComponent/circleComponent",
+    "mpvue-echarts": "/mpvue-echarts/src/echarts"
+  }
+}

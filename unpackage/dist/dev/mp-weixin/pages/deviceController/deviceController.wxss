@@ -1,0 +1,23 @@
+
+.ztnCustom-custominput.data-v-77052074 {
+	text-align: center;
+	height: 64rpx;
+	line-height: 64rpx;
+}
+.custom-button.data-v-77052074 {
+	background-color: #fff;
+}
+.custom-button.data-v-77052074::after {
+	border: 0;
+}
+.selectButton.data-v-77052074 {
+	color: #fff;
+	border: 1rpx solid var(--color);
+	background-color: var(--color)
+}
+.noSelectButton.data-v-77052074 {
+	color: var(--color);
+	border: 1rpx solid var(--color);
+	background-color: #fff
+}
+

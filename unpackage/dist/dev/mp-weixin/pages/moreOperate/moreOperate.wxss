@@ -1,0 +1,30 @@
+
+page {
+	background-color: #ffffff;
+}
+.custom-button {
+	position: relative;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 0px;
+	padding-right: 0px;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
+	font-size: 18px;
+	text-align: center;
+	text-decoration: none;
+	line-height: 1;
+	-webkit-border-radius: 0px;
+	        border-radius: 0px;
+	-webkit-tap-highlight-color: transparent;
+	overflow: hidden;
+	background-color: #fff;
+}
+.custom-button::after {
+	border: 0;
+}
+.custom-button-hover {
+	background-color: #fff;
+}
+

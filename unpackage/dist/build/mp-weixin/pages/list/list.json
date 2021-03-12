@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "list-fav": "/components/ztn-custom/listFav/listFav",
+    "surplus": "/components/ztn-custom/surplus/surplus"
+  }
+}

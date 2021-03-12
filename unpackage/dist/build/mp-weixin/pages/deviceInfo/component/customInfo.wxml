@@ -1,0 +1,1 @@
+<view><block wx:if="{{isToHome}}"><cu-custom vue-id="2a3d049a-1" isHome="{{true}}" bgColor="{{emphasizeColor}}" textColor="{{commonColor}}" bind:__l="__l"></cu-custom></block><block wx:else><cu-custom vue-id="2a3d049a-2" isBack="{{true}}" bgColor="{{emphasizeColor}}" textColor="{{commonColor}}" bind:__l="__l"></cu-custom></block><view>customInfo</view></view>

@@ -1,0 +1,1 @@
+<view class="ztnCustom-mapFav data-v-3ce06236"><text class="data-v-3ce06236">{{loginForMore}}</text><text data-event-opts="{{[['tap',[['tapChild',['$event']]]]]}}" class="ztnCustom-mapFav-btn data-v-3ce06236" bindtap="__e">{{immediateLoginText}}</text></view>

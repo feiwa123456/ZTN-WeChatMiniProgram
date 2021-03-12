@@ -1,0 +1,9 @@
+.view.data-v-282b6875{font-family:sans-serif;text-transform:uppercase;font-weight:700}.charging.data-v-282b6875,
+.hundred-percent-battery.data-v-282b6875,
+.twenty-percent-battery.data-v-282b6875,
+.zero-percent-battery.data-v-282b6875{margin:0 auto;width:40rpx;height:32rpx;background-color:#fff;border-width:5rpx;border-style:solid;-webkit-border-radius:8rpx;border-radius:8rpx;border-color:var(--color);position:relative}.charging.data-v-282b6875:before,
+.hundred-percent-battery.data-v-282b6875:before,
+.twenty-percent-battery.data-v-282b6875:before,
+.zero-percent-battery.data-v-282b6875:before{position:absolute;content:"";display:block;width:6rpx;height:10rpx;right:-10rpx;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);background-color:var(--color)}.hundred-percent-battery.data-v-282b6875:after,
+.twenty-percent-battery.data-v-282b6875:after,
+.zero-percent-battery.data-v-282b6875:after{position:absolute;content:"";left:5rpx;top:5rpx;bottom:5rpx;background-color:var(--color);-webkit-border-radius:3rpx;border-radius:3rpx}.hundred-percent-battery.data-v-282b6875:after{right:5rpx}.twenty-percent-battery.data-v-282b6875:after{right:15rpx}.zero-percent-battery.data-v-282b6875:after{right:20rpx}.charging.data-v-282b6875:after{position:absolute;content:"⌁";left:0;top:40%;right:0;-webkit-transform:translateY(-50%);transform:translateY(-50%);color:var(--color);font-size:42rpx}

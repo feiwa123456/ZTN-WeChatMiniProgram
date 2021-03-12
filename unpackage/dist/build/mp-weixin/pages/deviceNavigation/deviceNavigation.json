@@ -1,0 +1,11 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "default-info-component": "/pages/deviceInfo/component/defaultInfo",
+    "custom-info-component": "/pages/deviceInfo/component/customInfo",
+    "param-component": "/pages/deviceParam/deviceParam",
+    "sensor-component": "/pages/deviceSensor/deviceSensor",
+    "controller-component": "/pages/deviceController/deviceController",
+    "tabbar": "/components/ztn-custom/tabbar/tabbar"
+  }
+}

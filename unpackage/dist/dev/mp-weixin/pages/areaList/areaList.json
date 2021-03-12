@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "surplus": "/components/ztn-custom/surplus/surplus"
+  }
+}

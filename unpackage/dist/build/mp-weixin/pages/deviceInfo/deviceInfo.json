@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "default-info-component": "/pages/deviceInfo/component/defaultInfo",
+    "custom-info-component": "/pages/deviceInfo/component/customInfo"
+  }
+}

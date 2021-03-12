@@ -1,0 +1,173 @@
+{
+	"pages": [{
+			"path": "pages/nav/nav",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/home/home",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/map/map",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/list/list",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/center/center",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/deviceNavigation/deviceNavigation",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/deviceInfo/deviceInfo",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/deviceParam/deviceParam",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/deviceSensor/deviceSensor",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/deviceController/deviceController",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/areaList/areaList",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/deviceLocal/deviceLocal",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/deviceError/deviceError",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/deviceStatus/deviceStatus",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/deviceNotice/deviceNotice",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/deviceSensorExplain/deviceSensorExplain",
+			"style": {
+				//#ifdef MP-WEIXIN
+				"navigationBarTextStyle": "#ffffff",
+				"navigationBarBackgroundColor": "#ffffff"
+				//#endif
+			}
+		}, {
+			"path": "pages/devicePlayer/devicePlayer",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/moreOperate/moreOperate",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/moreSetting/moreSetting",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/deviceCamera/deviceCamera",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/web/web",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/register/register",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}
+
+	],
+	"globalStyle": {
+		// "navigationBarBackgroundColor": "#0081ff",
+		// "navigationBarTitleText": "",
+		// "navigationStyle": "custom",
+		// "navigationBarTextStyle": "white"
+	},
+	"condition": { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [{
+				"name": "设备详情(农业气象站_01)", //模式名称
+				"path": "pages/deviceNavigation/deviceNavigation", //启动页面，必选
+				"query": "deviceCore=AG_station_01&deviceName=农业气象站_01&pageCur=deviceInfo" //启动参数，在页面的onLoad函数里面得到
+			},
+			{
+				"name": "设备详情(农业气象站_02)",
+				"path": "pages/deviceNavigation/deviceNavigation",
+				"query": "deviceCore=AG_station_02&deviceName=农业气象站_02&pageCur=deviceController"
+			}, {
+				"name": "设备详情(太阳能控制器-GW_B2)",
+				"path": "pages/deviceNavigation/deviceNavigation",
+				"query": "deviceCore=GateWay_B2&deviceName=太阳能控制器-GW_B2&pageCur=deviceInfo"
+			},
+			{
+				"name": "设备详情(uuuuuuuuu)",
+				"path": "pages/deviceNavigation/deviceNavigation",
+				"query": "deviceCore=uuuuuuuuu&deviceName=uuuuuuuuu&pageCur=deviceInfo"
+			},
+			{
+				"name": "设备详情页面(uuuuuuuuu)",
+				"path": "pages/deviceInfo/deviceInfo",
+				"query": "deviceCore=uuuuuuuuu&deviceName=uuuuuuuuu"
+			},
+			{
+				"name": "设备监控",
+				"path": "pages/deviceCamera/deviceCamera",
+				"query": ""
+			}, {
+				"name": "登录界面",
+				"path": "pages/login/login",
+				"query": ""
+			}
+		]
+	}
+}

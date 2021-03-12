@@ -1,0 +1,5 @@
+const customDeviceInfoCompanyIdArr = []
+
+export {
+	customDeviceInfoCompanyIdArr
+}

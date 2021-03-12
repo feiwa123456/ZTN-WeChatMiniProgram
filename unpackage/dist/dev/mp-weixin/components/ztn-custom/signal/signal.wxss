@@ -1,0 +1,30 @@
+
+.view_sign.data-v-c10fba76 {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: end;
+	-webkit-align-items: flex-end;
+	        align-items: flex-end;
+	height: 32rpx;
+}
+.view.data-v-c10fba76 {
+	width: 8rpx;
+	/* border: 1upx solid #666; */
+}
+.first-view.data-v-c10fba76 {
+	height: 10rpx;
+}
+.second-view.data-v-c10fba76 {
+	height: 17rpx;
+	margin-left: 5rpx;
+}
+.third-view.data-v-c10fba76 {
+	height: 24rpx;
+	margin-left: 5rpx;
+}
+.fourth-view.data-v-c10fba76 {
+	height: 32rpx;
+	margin-left: 5rpx;
+}
+

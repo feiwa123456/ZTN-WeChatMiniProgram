@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "circle-component": "/components/ztn-custom/circleComponent/circleComponent",
+    "signal": "/components/ztn-custom/signal/signal",
+    "solid-color-surplus": "/components/ztn-custom/surplus/solidColorSurplus"
+  }
+}

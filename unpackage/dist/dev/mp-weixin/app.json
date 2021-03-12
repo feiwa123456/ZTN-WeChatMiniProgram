@@ -1,0 +1,41 @@
+{
+  "pages": [
+    "pages/nav/nav",
+    "pages/home/home",
+    "pages/map/map",
+    "pages/list/list",
+    "pages/center/center",
+    "pages/deviceNavigation/deviceNavigation",
+    "pages/deviceInfo/deviceInfo",
+    "pages/deviceParam/deviceParam",
+    "pages/deviceSensor/deviceSensor",
+    "pages/deviceController/deviceController",
+    "pages/areaList/areaList",
+    "pages/deviceLocal/deviceLocal",
+    "pages/deviceError/deviceError",
+    "pages/deviceStatus/deviceStatus",
+    "pages/deviceNotice/deviceNotice",
+    "pages/deviceSensorExplain/deviceSensorExplain",
+    "pages/devicePlayer/devicePlayer",
+    "pages/moreOperate/moreOperate",
+    "pages/moreSetting/moreSetting",
+    "pages/deviceCamera/deviceCamera",
+    "pages/web/web",
+    "pages/login/login",
+    "pages/register/register"
+  ],
+  "subPackages": [],
+  "window": {},
+  "permission": {
+    "scope.userLocation": {
+      "desc": "请点击确定"
+    }
+  },
+  "uniStatistics": {
+    "enable": true
+  },
+  "usingComponents": {
+    "cu-custom": "/colorui/components/cu-custom",
+    "mescroll-body": "/components/mescroll-uni/mescroll-body"
+  }
+}

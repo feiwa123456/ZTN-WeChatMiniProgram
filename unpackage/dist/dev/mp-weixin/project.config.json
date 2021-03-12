@@ -1,0 +1,100 @@
+{
+	"description": "项目配置文件。",
+	"packOptions": {
+		"ignore": []
+	},
+	"setting": {
+		"urlCheck": true,
+		"es6": true,
+		"enhance": false,
+		"postcss": true,
+		"preloadBackgroundData": false,
+		"minified": true,
+		"newFeature": false,
+		"coverView": true,
+		"nodeModules": false,
+		"autoAudits": false,
+		"showShadowRootInWxmlPanel": true,
+		"scopeDataCheck": false,
+		"uglifyFileName": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"compileHotReLoad": false,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		},
+		"useIsolateContext": true,
+		"useCompilerModule": false,
+		"userConfirmedUseCompilerModuleSwitch": false
+	},
+	"compileType": "miniprogram",
+	"libVersion": "",
+	"appid": "wxd0336320ba6e33cc",
+	"projectname": "中泰能",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": 0,
+			"list": [
+				{
+					"name": "设备详情(农业气象站_01)",
+					"query": "deviceCore=AG_station_01&deviceName=农业气象站_01&pageCur=deviceInfo",
+					"id": 0,
+					"pathName": "pages/deviceNavigation/deviceNavigation"
+				},
+				{
+					"name": "设备详情(农业气象站_02)",
+					"query": "deviceCore=AG_station_02&deviceName=农业气象站_02&pageCur=deviceController",
+					"id": 1,
+					"pathName": "pages/deviceNavigation/deviceNavigation"
+				},
+				{
+					"name": "设备详情(太阳能控制器-GW_B2)",
+					"query": "deviceCore=GateWay_B2&deviceName=太阳能控制器-GW_B2&pageCur=deviceInfo",
+					"id": 2,
+					"pathName": "pages/deviceNavigation/deviceNavigation"
+				},
+				{
+					"name": "设备详情(uuuuuuuuu)",
+					"query": "deviceCore=uuuuuuuuu&deviceName=uuuuuuuuu&pageCur=deviceInfo",
+					"id": 3,
+					"pathName": "pages/deviceNavigation/deviceNavigation"
+				},
+				{
+					"name": "设备详情页面(uuuuuuuuu)",
+					"query": "deviceCore=uuuuuuuuu&deviceName=uuuuuuuuu",
+					"id": 4,
+					"pathName": "pages/deviceInfo/deviceInfo"
+				},
+				{
+					"name": "设备监控",
+					"query": "",
+					"id": 5,
+					"pathName": "pages/deviceCamera/deviceCamera"
+				},
+				{
+					"name": "登录界面",
+					"query": "",
+					"id": 6,
+					"pathName": "pages/login/login"
+				}
+			]
+		}
+	}
+}
