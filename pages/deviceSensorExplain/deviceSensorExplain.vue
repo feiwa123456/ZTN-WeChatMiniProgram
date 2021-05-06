@@ -14,9 +14,8 @@
 			<view class="cu-list menu-avatar">
 				<view class="cu-item cur ztnCustom-realTime" :style="{borderBottom: realTimeList.length == index+1 ? '0.5px solid #fff' : ''}"
 				 v-for="(item,index) in realTimeList" :key="index">
-					<view class="cu-avatar radius sm" @tap="isShowAlarmModel(item)" :style="[{backgroundImage:`url(${item.iconUrl})`}]"
+					<view class="cu-avatar radius sm" @tap="getExplainWarnList(item.explainId)" :style="[{backgroundImage:`url(${item.iconUrl})`}]"
 					 style="width: 80rpx;height: 80rpx;background-color:rgba(0,0,0,0)">
-						<view class="cu-tag badge" v-if="item.less != '' || item.greater != '' || item.equal != '' || item.wave != ''"></view>
 					</view>
 					<view class="content" @tap="goItemHistoryData(item)" style="width:350upx;">
 						<view>
@@ -39,7 +38,7 @@
 		 :circleWidth="85" :circleHeight="85" :circleBgColor="circleBgColor" :circleBorder="''">
 			<text @tap="updateData" class="cuIcon-refresh" style="font-size:0.7em" :style="[{color:emphasizeColor}]"></text>
 		</circleComponent>
-		
+
 		<view class="cu-modal bottom-modal" :class="[showModel=='realTime' && showErrorModal?'show':'']">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white">
@@ -50,44 +49,105 @@
 				</view>
 			</view>
 		</view>
-		
-		<view class="cu-modal bottom-modal" :class="[isShowAlarm && showModel=='realTime'?'show':'']" style="text-align: start">
+
+		<view class="cu-modal bottom-modal" :class="[isShowWarnModel && showModel=='realTime'?'show':'']" style="text-align: start">
 			<view class="cu-dialog bg-white" style="border-top-left-radius:20rpx;border-top-right-radius:20rpx;">
 				<view class="cu-bar bg-white text-bold">
 					<view class='action'>
-						{{i18n.deviceSensorExplain.setAlarmValue}}
+						{{i18n.deviceSensorExplain.warnValue}}
 					</view>
 					<view class='action padding-right'>
-						<text>{{explainName}}</text>
+						<text v-if="explainWarnList.length != 0 && !isShowCheck" class="cuIcon-roundaddfill" style="font-size: 54rpx;"
+						 :style="[{color:emphasizeColor}]" @tap="showAddWarnModel"></text>
+						<text v-if="!isShowCheck" class="cuIcon-roundclosefill" style="font-size: 54rpx;" :style="[{color:emphasizeColor}]"
+						 @tap="explainWarnList.length != 0 ? showCheck() : unShowExplainWarn()"></text>
 					</view>
 				</view>
-				<form @submit="setAlarmValue">
+
+				<view v-if="explainWarnList.length != 0" :class="isShowCheck ? 'ztnCustom-move-cur':''" class="text-center ztnCustom-cur"
+				 style="display: flex;justify-content: center;align-items: center;">
+					<view class="ztnCustom-move" style="width: 20%;">
+						<view>{{i18n.deviceSensorExplain.select}}</view>
+					</view>
+					<view class="margin-xs" style="width: 20%;">{{i18n.deviceSensorExplain.level}}</view>
+					<view class="margin-xs" style="width: 20%;">{{i18n.deviceSensorExplain.less}}</view>
+					<view class="margin-xs" style="width: 20%;">{{i18n.deviceSensorExplain.greater}}</view>
+					<view class="margin-xs" style="width: 20%;">{{i18n.deviceSensorExplain.equal}}</view>
+					<view class="margin-xs" style="width: 20%;">{{i18n.deviceSensorExplain.wave}}</view>
+				</view>
+				<scroll-view scroll-y="true" style="height:250px">
+					<view v-if="explainWarnList.length != 0">
+						<checkbox-group @change="changeCheck">
+							<view v-for="(item,index) in explainWarnList" :key="index" :class="isShowCheck?'ztnCustom-move-cur':''" class="text-center ztnCustom-cur"
+							 style="display: flex;justify-content: center;align-items: center;">
+								<view class="ztnCustom-move" style="width: 20%;">
+									<checkbox v-if="isShowCheck" class="round" :value="index" :checked="item.checked" />
+								</view>
+								<input type="number" @input="changeInput($event,index,'warnId')" name="warnId" :value="item.warnId" class="input margin-xs"
+								 style="width: 20%;" disabled />
+								<input type="number" @input="changeInput($event,index,'less')" name="less" :value="item.less" class="input margin-xs"
+								 :class="[item.warnId == 0 ?'bg-gray':'']" :disabled="item.warnId == 0" style="width: 20%;" />
+								<input type="number" @input="changeInput($event,index,'greater')" name="greater" :value="item.greater" class="input margin-xs"
+								 :class="[item.warnId == 0 ?'bg-gray':'']" :disabled="item.warnId == 0" style="width: 20%;" />
+								<input type="number" @input="changeInput($event,index,'equal')" name="equal" :value="item.equal" class="input margin-xs"
+								 :class="[item.warnId == 0 ?'bg-gray':'']" :disabled="item.warnId == 0" style="width: 20%;" />
+								<input type="number" @input="changeInput($event,index,'wave')" name="wave" :value="item.wave" class="input margin-xs"
+								 :class="[item.warnId == 0 ?'bg-gray':'']" :disabled="item.warnId == 0" style="width: 20%;" />
+							</view>
+						</checkbox-group>
+					</view>
+					<view v-else class="text-center" style="margin-top:60px">
+						<view class="cuIcon-edit text-grey" style="font-size:80px"></view>
+						<button class="cu-btn round line-grey margin lg" @tap="showAddWarnModel">{{i18n.add}}</button>
+					</view>
+				</scroll-view>
+				<view v-if="explainWarnList.length != 0">
+					<view v-if="isShowCheck" class="flex justify-between align-center">
+						<button class="cu-btn block line-grey margin lg" @tap="deleteExplainWarn">{{i18n.deleteSelect}}</button>
+						<button class="cu-btn block line-grey margin lg" @tap="unDeleteExplainWarn">{{i18n.cancel}}</button>
+					</view>
+					<view v-else class="flex justify-between align-center">
+						<button class="cu-btn block line-grey margin lg" @tap="saveExplainWarn">{{i18n.save}}</button>
+						<button class="cu-btn block line-grey margin lg" @tap="unShowExplainWarn">{{i18n.cancel}}</button>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<view class="cu-modal bottom-modal" :class="[isShowAddWarnModel && showModel=='realTime'?'show':'']" style="text-align: start">
+			<view class="cu-dialog bg-white" style="border-top-left-radius:20rpx;border-top-right-radius:20rpx;">
+				<view class="cu-bar bg-white text-bold">
+					<view class='action'>
+						{{i18n.deviceSensorExplain.setWarnValue}}
+					</view>
+				</view>
+				<form @submit="addExplainWarn">
 					<view class="cu-form-group">
-						<view class="title">{{i18n.deviceSensorExplain.lowAlarmValue}}：</view>
-						<input type="text" name="less" :value="less"></input>
+						<view class="title">{{i18n.deviceSensorExplain.lowWarnValue}}：</view>
+						<input type="number" name="less"></input>
 					</view>
 					<view class="cu-form-group">
-						<view class="title">{{i18n.deviceSensorExplain.highAlarmValue}}：</view>
-						<input type="text" name="greater" :value="greater"></input>
+						<view class="title">{{i18n.deviceSensorExplain.highWarnValue}}：</view>
+						<input type="number" name="greater"></input>
 					</view>
 					<view class="cu-form-group">
-						<view class="title">{{i18n.deviceSensorExplain.equalAlarmValue}}：</view>
-						<input type="text" name="equal" :value="equal"></input>
+						<view class="title">{{i18n.deviceSensorExplain.equalWarnValue}}：</view>
+						<input type="number" name="equal"></input>
 					</view>
 					<view class="cu-form-group">
-						<view class="title">{{i18n.deviceSensorExplain.fluctuationAlarm}}：</view>
-						<input type="text" name="wave" :value="wave"></input>
+						<view class="title">{{i18n.deviceSensorExplain.fluctuationWarn}}：</view>
+						<input type="number" name="wave"></input>
 					</view>
 					<view class="cu-form-group" style="min-height:30rpx;">
 					</view>
 					<view class="flex justify-between align-center">
-						<button class="cu-btn block line-grey margin lg" @tap="cancelSetAlarm">{{i18n.cancel}}</button>
 						<button class="cu-btn block line-grey margin lg" form-type="submit">{{i18n.confirm}}</button>
+						<button class="cu-btn block line-grey margin lg" @tap="unShowAddWarnModel">{{i18n.cancel}}</button>
 					</view>
 				</form>
 			</view>
 		</view>
-		
+
 		<!-- #ifdef MP-WEIXIN -->
 		<view v-if="showModel=='history'" class="flex" style="width:100%;">
 			<picker mode="date" :value="startDate " :end="initEndTimestamp | formatDate" @change='startDateChange'>
@@ -153,14 +213,13 @@
 				ModelHeight: '',
 				realTimeList: [],
 				explainId: '',
-				explainName: '',
-				less: '',
-				greater: '',
-				equal: '',
-				wave: '',
+				explainWarnList: [],
+				checkWarnList: [],
+				isShowCheck: false,
+				isShowWarnModel: false,
+				isShowAddWarnModel: false,
 				settingError: '',
 				showErrorModal: false,
-				isShowAlarm: false,
 				isShowFilter: true,
 				historyMarginTop: '',
 				chartList: [],
@@ -173,6 +232,7 @@
 				endcreatedTime: '',
 				selectItemHistory: null,
 				lazyLoad: false,
+				intervalID: null,
 			}
 		},
 		computed: {
@@ -219,6 +279,9 @@
 			isLogin ? this.init(option) : uni.navigateTo({
 				url: '/pages/login/login'
 			})
+			// let date = new Date()
+			// console.log('-----------')
+			// console.log(date)
 		},
 		onShow: function() {
 			this.$uniUtilsApi.toHome(this)
@@ -229,18 +292,27 @@
 		},
 		onUnload: function(e) {
 			let isLogin = this.isLogin
-			isLogin && this.unBindUserSocket()
-			isLogin && this.socketTask.close({
-				success: (res) => {
-					// console.log('关闭成功', res)
-				},
-				fail: (err) => {
-					// console.log('关闭失败', err)
-				}
-			})
+			let intervalID = this.intervalID
+			if (isLogin) {
+				this.unBindUserSocket()
+				this.socketTask.close({
+					success: (res) => {},
+					fail: (err) => {}
+				})
+				clearInterval(intervalID)
+			}
 		},
 		methods: {
 			init: function(option) {
+				let socketTask = this.socketTask
+				if (socketTask) {
+					this.unBindUserSocket()
+					this.socketTask.close({
+						success: (res) => {},
+						fail: (err) => {}
+					})
+					clearInterval(intervalID)
+				}
 				this.deviceName = option.deviceName
 				this.deviceCore = option.deviceCore
 				this.sensorId = option.sensorId
@@ -290,42 +362,92 @@
 					}
 				})
 			},
-			isShowAlarmModel: function(e) {
-				let {
-					explainId,
-					name,
-					less,
-					greater,
-					equal,
-					wave
-				} = e
-				this.explainId = explainId
-				this.explainName = name
-				this.less = less
-				this.greater = greater
-				this.equal = equal
-				this.wave = wave
-				this.isShowAlarm = true
+			showExplainWarn: function() {
+				this.isShowWarnModel = true
 			},
-			setAlarmValue: function(e) {
-				var sensorId = this.sensorId
-				var explainId = this.explainId
-				var {
-					less,
-					greater,
-					equal,
-					wave
-				} = e.detail.value
-				deviceSensorExplainApi.setAlarmValue(this, explainId, sensorId, less, greater, equal, wave).then((res) => {
+			unShowExplainWarn: function() {
+				this.isShowWarnModel = false
+			},
+			getExplainWarnList: function(value) {
+				let isShowWarnModel = this.isShowWarnModel
+				deviceSensorExplainApi.getExplainWarnList(this, value).then((res) => {
 					if (res.code == '200') {
-						this.isShowAlarm = false
-						this.$uniUtilsApi.showToast(this.i18n.setSuccess, 'none', 1000, false)
-						this.getRealTimeList()
+						let data = res.data
+						let arr = []
+						for (let i = 0; i < data.length; i++) {
+							let obj = {}
+							let {
+								warnId,
+								less,
+								greater,
+								equal,
+								wave
+							} = data[i]
+							obj.warnId = warnId
+							obj.less = less
+							obj.greater = greater
+							obj.equal = equal
+							obj.wave = wave
+							obj.checked = false
+							arr.push(obj)
+						}
+						this.explainId = value
+						this.explainWarnList = arr
+						if (!isShowWarnModel) this.showExplainWarn()
 					}
 				})
 			},
-			cancelSetAlarm: function() {
-				this.isShowAlarm = false
+			changeInput: function(e, index, name) {
+				let value = e.detail.value
+				let explainWarnList = this.explainWarnList
+				explainWarnList[index][name] = value
+				this.explainWarnList = explainWarnList
+			},
+			saveExplainWarn: function() {
+				let warnList = this.explainWarnList
+				this.getDeleteAndInsertList(warnList)
+				this.unShowExplainWarn()
+			},
+			showCheck: function() {
+				this.isShowCheck = true
+			},
+			changeCheck: function(e) {
+				this.checkWarnList = e.detail.value
+			},
+			deleteExplainWarn: function() {
+				let explainId = this.explainId
+				let list = this.checkWarnList
+				let explainWarnList = this.explainWarnList.filter((value, index) => {
+					return list.indexOf(index + '') === -1
+				});
+				this.getDeleteAndInsertList(explainWarnList)
+				this.unDeleteExplainWarn()
+			},
+			unDeleteExplainWarn: function() {
+				this.isShowWarnModel = false
+				this.checkWarnList = []
+				this.isShowCheck = false
+			},
+			showAddWarnModel: function() {
+				this.isShowAddWarnModel = true
+				this.isShowWarnModel = false
+			},
+			unShowAddWarnModel: function(e) {
+				this.isShowAddWarnModel = false
+			},
+			addExplainWarn: function(e) {
+				let value = e.detail.value
+				let explainWarnList = this.explainWarnList
+				explainWarnList.unshift(value)
+				this.getDeleteAndInsertList(explainWarnList)
+				this.unShowAddWarnModel()
+			},
+			getDeleteAndInsertList: function(warnList) {
+				let explainId = this.explainId
+				deviceSensorExplainApi.getDeleteAndInsertList(this, explainId, warnList).then((res) => {
+					let text = res.code == '200' ? this.i18n.setSuccess : this.i18n.setFail
+					this.$uniUtilsApi.showToast(text, 'none', 1000, false)
+				})
 			},
 			deviceController: function() {
 				let deviceName = this.deviceName
@@ -353,14 +475,11 @@
 				this.showErrorModal = false
 			},
 			connectSocket: function() {
-				let userId = uni.getStorageSync('userId')
-				let companyId = uni.getStorageSync('companyId')
-				let devKey = uni.getStorageSync('devKey')
 				let accessToken = uni.getStorageSync('accessToken')
 				let language = uni.getStorageSync('language')
 				let sensorId = this.sensorId
 				let socketUrl =
-					`wss://core.ztn-tech.com/ws?userId=${userId}&companyId=${companyId}&devKey=${devKey}&accessToken=${accessToken}&language=${language}&app=iot`
+					`wss://core.ztn-tech.com/ws?accessToken=${accessToken}&language=${language}&app=iot`
 				this.socketTask = uni.connectSocket({
 					url: socketUrl,
 					header: {
@@ -376,21 +495,26 @@
 				this.socketTask.onOpen((res) => {
 					// console.log("WebSocket连接正常打开中...！");
 					// 注：只有连接正常打开中 ，才能正常成功发送消息
-					this.bindUserSocket()
+					let bindUserSocket = this.bindUserSocket
+					let time = 1000 * 60 * 60 * 1
+					let intervalID = setInterval(bindUserSocket, time)
+					this.intervalID = intervalID
+					bindUserSocket()
 					// 注：只有连接正常打开中 ，才能正常收到消息
 					this.socketTask.onMessage((res) => {
 						this.handleSocketData(res.data)
 					});
 					this.socketTask.onClose((res) => {
-						// console.log("关闭回调--------------" + res.data);
+						// console.log("关闭回调--------------" + res[reason]);
 					})
+
 				})
 			},
 			bindUserSocket: function() {
 				let sensorId = this.sensorId
 				let data = {
-					cmd: 'bindSensor',
-					param: sensorId
+					cmd: 'bindRoom',
+					param: `iot:sensor:${sensorId}`
 				}
 				this.socketTask.send({
 					data: JSON.stringify(data),
@@ -402,8 +526,8 @@
 			unBindUserSocket: function() {
 				let sensorId = this.sensorId
 				let data = {
-					cmd: 'unBindSensor',
-					param: sensorId
+					cmd: 'unBindRoom',
+					param: `iot:sensor:${sensorId}`
 				}
 				this.socketTask.send({
 					data: JSON.stringify(data),
@@ -452,18 +576,11 @@
 			getListWithExplain: function(e, first) {
 				first && (this.chartList = [])
 				let sensorId = this.sensorId
-				let initStartTimestamp = this.initStartTimestamp
 				let startTimestamp = this.startTimestamp
 				let endTimestamp = this.endTimestamp
-				if (startTimestamp > initStartTimestamp || startTimestamp == initStartTimestamp) {
-					deviceSensorApi.getListWithExplain(this, sensorId, startTimestamp, endTimestamp).then((res) => {
-						this.handleListWithExplain(e, first, res)
-					})
-				} else {
-					deviceSensorApi.getHistoryListWithExplain(this, sensorId, startTimestamp, endTimestamp).then((res) => {
-						this.handleListWithExplain(e, first, res)
-					})
-				}
+				deviceSensorApi.getHistoryListWithExplain(this, sensorId, startTimestamp, endTimestamp).then((res) => {
+					this.handleListWithExplain(e, first, res)
+				})
 			},
 			handleListWithExplain: function(e, first, res) {
 				if (res.code == '200') {
@@ -512,7 +629,7 @@
 							if (obj[keyName] != undefined) {
 								details.push({
 									time: (newDate.getMonth() + 1) + '/' + newDate.getDate() + ' ' + newDate.getHours() + ':' + newDate.getMinutes(),
-									val: parseInt(obj[keyName]),
+									val: Number(obj[keyName]),
 								});
 							}
 						}
@@ -643,17 +760,18 @@
 						data: timeValue,
 						type: 'line',
 						smooth: true,
-						markPoint: {
-							data: [{
-									type: 'max',
-									name: '最大值'
-								},
-								{
-									type: 'min',
-									name: '最小值'
-								}
-							]
-						},
+						// markPoint: {
+						// 	data: [{
+						// 			type: 'max',
+						// 			name: '最大值',
+						// 			valueIndex: 1
+						// 		},
+						// 		{
+						// 			type: 'min',
+						// 			name: '最小值'
+						// 		}
+						// 	],
+						// },
 						markLine: {
 							data: [{
 								type: 'average',
@@ -690,7 +808,8 @@
 					this.startDate = e.detail.value
 					this.startTimestamp = timestamp
 					let selectItemHistory = this.selectItemHistory
-					selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(selectItemHistory,
+					selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(
+						selectItemHistory,
 						false)
 				}
 			},
@@ -706,7 +825,8 @@
 					this.endDate = e.detail.value
 					this.endTimestamp = timestamp
 					let selectItemHistory = this.selectItemHistory
-					selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(selectItemHistory,
+					selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(
+						selectItemHistory,
 						false)
 				}
 			},
@@ -718,7 +838,8 @@
 				let endcreatedTime = this.endcreatedTime
 				this.startTimestamp = (parseInt(endcreatedTime) - timeList[index]).toString()
 				let selectItemHistory = this.selectItemHistory
-				selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(selectItemHistory,
+				selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(
+					selectItemHistory,
 					false)
 			}
 		},
@@ -761,6 +882,33 @@
 		word-wrap: break-word;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+	}
+
+	.input {
+		border: 1rpx solid rgba(0, 0, 0, 0.1);
+		border-radius: 5px;
+		height: 80rpx;
+		line-height: 80rpx;
+	}
+
+	.ztnCustom-cur {
+		transition: all .6s ease-in-out 0s;
+		transform: translateX(0upx)
+	}
+
+	.ztnCustom-move-cur {
+		transform: translateX(20%)
+	}
+
+	.ztnCustom-move {
+		position: absolute;
+		z-index: 999;
+		left: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 20%;
+		transform: translateX(-100%);
 	}
 
 	/* .ztnCustom-realTime:last-child {

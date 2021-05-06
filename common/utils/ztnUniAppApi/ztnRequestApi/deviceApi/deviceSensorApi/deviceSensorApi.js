@@ -8,15 +8,15 @@ function getSensorList(that, deviceCore) {
 }
 
 
-function getListWithExplain(that, sensorId, startTimestamp, endTimestamp) {
-	let promise = that.$uniBaseRequest(that, '/device/sensor/data/listWithExplain', {
-		enableEval: true,
-		sensorId: sensorId,
-		startTime: startTimestamp,
-		endTime: endTimestamp,
-	})
-	return promise
-}
+// function getListWithExplain(that, sensorId, startTimestamp, endTimestamp) {
+// 	let promise = that.$uniBaseRequest(that, '/device/sensor/data/listWithExplain', {
+// 		enableEval: true,
+// 		sensorId: sensorId,
+// 		startTime: startTimestamp,
+// 		endTime: endTimestamp,
+// 	})
+// 	return promise
+// }
 
 function getHistoryListWithExplain(that, sensorId, startTimestamp, endTimestamp) {
 	let promise = that.$uniBaseRequest(that, '/history/device/sensor/data/listWithExplain', {
@@ -40,7 +40,7 @@ function getListWith(that, deviceCore, withExplain, withParam, withSetting) {
 
 export {
 	getSensorList,
-	getListWithExplain,
+	// getListWithExplain,
 	getHistoryListWithExplain,
 	getListWith
 }

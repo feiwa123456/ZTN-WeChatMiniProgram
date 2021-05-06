@@ -1814,7 +1814,7 @@ uni$1;exports.default = _default;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.getSensorList = getSensorList;exports.getListWithExplain = getListWithExplain;exports.getHistoryListWithExplain = getHistoryListWithExplain;exports.getListWith = getListWith;function getSensorList(that, deviceCore) {
+Object.defineProperty(exports, "__esModule", { value: true });exports.getSensorList = getSensorList;exports.getHistoryListWithExplain = getHistoryListWithExplain;exports.getListWith = getListWith;function getSensorList(that, deviceCore) {
   var promise = that.$uniBaseRequest(that, '/device/sensor/list', {
     deviceCore: deviceCore,
     currentPage: 1,
@@ -1824,15 +1824,15 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.getSensorL
 }
 
 
-function getListWithExplain(that, sensorId, startTimestamp, endTimestamp) {
-  var promise = that.$uniBaseRequest(that, '/device/sensor/data/listWithExplain', {
-    enableEval: true,
-    sensorId: sensorId,
-    startTime: startTimestamp,
-    endTime: endTimestamp });
-
-  return promise;
-}
+// function getListWithExplain(that, sensorId, startTimestamp, endTimestamp) {
+// 	let promise = that.$uniBaseRequest(that, '/device/sensor/data/listWithExplain', {
+// 		enableEval: true,
+// 		sensorId: sensorId,
+// 		startTime: startTimestamp,
+// 		endTime: endTimestamp,
+// 	})
+// 	return promise
+// }
 
 function getHistoryListWithExplain(that, sensorId, startTimestamp, endTimestamp) {
   var promise = that.$uniBaseRequest(that, '/history/device/sensor/data/listWithExplain', {
@@ -1871,11 +1871,11 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.getSetting
   return promise;
 }
 
-function saveSetting(that, deviceCore) {var value = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;var setting = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;var port = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;var childPort = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
+function saveSetting(that, deviceCore) {var value = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;var keyName = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;var port = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;var childPort = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
   var promise = that.$uniBaseRequest(that, '/device/setting/send', {
     deviceCore: deviceCore,
     value: value,
-    setting: setting,
+    keyName: keyName,
     port: port,
     childPort: childPort });
 
@@ -4177,10 +4177,13 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'zh': {
     lang: 'zh',
     loading: '加载中...',
+    save: '保存',
+    add: '添加',
     close: '关闭',
     open: '打开',
     cancel: '取消',
     confirm: '确定',
+    deleteSelect: '删除选中项',
     status: ['在线', '离线', '未激活', ' 禁用'],
     statu: '状态',
     no: '暂无',
@@ -4230,6 +4233,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     nextStep: '下一步',
     standard: '规范',
     seconds: '秒',
+    input: '请 输 入',
     inputUsername: '请 输 入 用 户 名',
     inputPassword: '请 输 入 密 码',
     inputDeviceCore: '请 输 入 设 备 码',
@@ -4390,11 +4394,18 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       command: '命令',
       update: '更新',
       time: '时间',
-      setAlarmValue: '设置警报值',
-      lowAlarmValue: '过低警报值',
-      highAlarmValue: '过高警报值',
-      equalAlarmValue: '等于警报值',
-      fluctuationAlarm: '波动警报值',
+      warnValue: '警报值',
+      setWarnValue: '设置警报值',
+      select: '选择',
+      level: '级别',
+      less: '小于',
+      greater: '大于',
+      equal: '等于',
+      wave: '波动',
+      lowWarnValue: '过低警报值',
+      highWarnValue: '过高警报值',
+      equalWarnValue: '等于警报值',
+      fluctuationWarn: '波动警报值',
       timeList: ['1分', '5分', '10分', '30分', '1小时', '5小时', '10小时', '15小时', '20小时'] },
 
     deviceController: {
@@ -4463,10 +4474,13 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'en': {
     lang: 'en',
     loading: 'loading...',
+    save: 'save',
+    add: 'add',
     close: 'close',
     open: 'open',
     cancel: 'cancel',
     confirm: 'confirm',
+    deleteSelect: 'delete',
     status: ['online', 'offline', 'not active', 'disable'],
     statu: 'statu',
     no: 'no data',
@@ -4516,6 +4530,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     nextStep: 'next step',
     standard: 'standard',
     seconds: 'seconds',
+    input: 'please enter the value',
     inputUsername: 'please enter the username',
     inputPassword: 'please enter the password',
     inputDeviceCore: 'please enter the devicecore',
@@ -4675,11 +4690,18 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       command: 'command',
       update: 'update',
       time: 'time',
-      setAlarmValue: 'set alarm value',
-      lowAlarmValue: 'too low alarm value',
-      highAlarmValue: 'too high alarm value',
-      equalAlarmValue: 'equal to alarm value',
-      fluctuationAlarm: 'fluctuation alarm',
+      warnValue: 'warn value',
+      setWarnValue: 'set warn value',
+      select: 'select',
+      level: 'level',
+      less: 'less',
+      greater: 'greater',
+      equal: 'equal',
+      wave: 'wave',
+      lowWarnValue: 'too low warn value',
+      highWarnValue: 'too high warn value',
+      equalWarnValue: 'equal to warn value',
+      fluctuationWarn: 'fluctuation warn',
       timeList: ['1 minute', '5 minute', '10 minute', '30 minute', '1 hour', '5 hour', '10 hour', '15 hour', '20 hour'] },
 
     deviceController: {
@@ -4754,7 +4776,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.getRealTimeList = getRealTimeList;exports.setAlarmValue = setAlarmValue;function getRealTimeList(that, sensorId) {
+Object.defineProperty(exports, "__esModule", { value: true });exports.getRealTimeList = getRealTimeList;exports.setAlarmValue = setAlarmValue;exports.getExplainWarnList = getExplainWarnList;exports.getDeleteAndInsertList = getDeleteAndInsertList;function getRealTimeList(that, sensorId) {
   var promise = that.$uniBaseRequest(that, '/device/explain/list', {
     sensorId: sensorId });
 
@@ -4769,6 +4791,21 @@ function setAlarmValue(that, explainId, sensorId, less, greater, equal, wave) {
     greater: greater,
     equal: equal,
     wave: wave });
+
+  return promise;
+}
+
+function getExplainWarnList(that, explainId) {
+  var promise = that.$uniBaseRequest(that, '/device/explain/config/warn/listWithTemplate', {
+    explainId: explainId });
+
+  return promise;
+}
+
+function getDeleteAndInsertList(that, explainId, warnList) {
+  var promise = that.$uniBaseRequest(that, '/device/explain/config/warn/deleteAndInsertList', {
+    explainId: explainId,
+    warnList: warnList });
 
   return promise;
 }
@@ -4889,13 +4926,14 @@ var lightColor = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.showToast = showToast;exports.showLoading = showLoading;exports.hideLoading = hideLoading;exports.showModal = showModal;exports.copy = copy;exports.handleScan = handleScan;exports.handleProductType = handleProductType;exports.handleProductSeries = handleProductSeries;exports.handleProductGroup = handleProductGroup;exports.handleDeviceStatus = handleDeviceStatus;exports.initDeviceList = initDeviceList;exports.getCompanyInfo = getCompanyInfo;exports.getDeviceInfo = getDeviceInfo;exports.getPages = getPages;exports.getPrevPage = getPrevPage;exports.toHome = toHome;exports.connectSocket = connectSocket;exports.openSocket = openSocket;exports.bindUserSocket = bindUserSocket;exports.unBindUserSocket = unBindUserSocket;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 19));var _uniSocket = _interopRequireDefault(__webpack_require__(/*! @hyoga/uni-socket.io */ 22));
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.showToast = showToast;exports.showLoading = showLoading;exports.hideLoading = hideLoading;exports.showModal = showModal;exports.copy = copy;exports.handleScan = handleScan;exports.handleProductType = handleProductType;exports.handleProductSeries = handleProductSeries;exports.handleProductGroup = handleProductGroup;exports.handleDeviceStatus = handleDeviceStatus;exports.initDeviceList = initDeviceList;exports.getCompanyInfo = getCompanyInfo;exports.getDeviceInfo = getDeviceInfo;exports.getPages = getPages;exports.getPrevPage = getPrevPage;exports.toHome = toHome;exports.connectSocket = connectSocket;exports.openSocket = openSocket;exports.closeSocket = closeSocket;exports.bindUserSocket = bindUserSocket;exports.unBindUserSocket = unBindUserSocket;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 19));var _uniSocket = _interopRequireDefault(__webpack_require__(/*! @hyoga/uni-socket.io */ 22));
 var _messages = _interopRequireDefault(__webpack_require__(/*! @/common/utils/messages/messages.js */ 16));
 var formatTime = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/filter/formatTime/formatTime.js */ 23));
-var userApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/userApi/userApi.js */ 24));
-var companyApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/companyApi/companyApi.js */ 25));
-var deviceInfoApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceInfoApi/deviceInfoApi.js */ 26));
-var clipboard = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/clipboard/clipboard.js */ 27));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _unsupportedIterableToArray(o, minLen) {if (!o) return;if (typeof o === "string") return _arrayLikeToArray(o, minLen);var n = Object.prototype.toString.call(o).slice(8, -1);if (n === "Object" && o.constructor) n = o.constructor.name;if (n === "Map" || n === "Set") return Array.from(o);if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);}function _iterableToArray(iter) {if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) return _arrayLikeToArray(arr);}function _arrayLikeToArray(arr, len) {if (len == null || len > arr.length) len = arr.length;for (var i = 0, arr2 = new Array(len); i < len; i++) {arr2[i] = arr[i];}return arr2;}
+var tokenApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/tokenApi/tokenApi.js */ 24));
+var userApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/userApi/userApi.js */ 25));
+var companyApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/companyApi/companyApi.js */ 26));
+var deviceInfoApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceInfoApi/deviceInfoApi.js */ 27));
+var clipboard = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/clipboard/clipboard.js */ 28));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _unsupportedIterableToArray(o, minLen) {if (!o) return;if (typeof o === "string") return _arrayLikeToArray(o, minLen);var n = Object.prototype.toString.call(o).slice(8, -1);if (n === "Object" && o.constructor) n = o.constructor.name;if (n === "Map" || n === "Set") return Array.from(o);if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);}function _iterableToArray(iter) {if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) return _arrayLikeToArray(arr);}function _arrayLikeToArray(arr, len) {if (len == null || len > arr.length) len = arr.length;for (var i = 0, arr2 = new Array(len); i < len; i++) {arr2[i] = arr[i];}return arr2;}
 
 
 function showToast(title, icon, duration) {var mask = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
@@ -5270,15 +5308,14 @@ function toHome(that) {
 }
 
 var socketTask;
+var intervalID;
 
 function connectSocket() {
-  var userId = uni.getStorageSync('userId');
-  var companyId = uni.getStorageSync('companyId');
-  var devKey = uni.getStorageSync('devKey');
+  if (socketTask) {closeSocket();}
   var accessToken = uni.getStorageSync('accessToken');
   var language = uni.getStorageSync('language');
-  var socketUrl = "wss://core.ztn-tech.com/ws?userId=".concat(
-  userId, "&companyId=").concat(companyId, "&devKey=").concat(devKey, "&accessToken=").concat(accessToken, "&language=").concat(language, "&app=iot");
+  var socketUrl = "wss://core.ztn-tech.com/ws?accessToken=".concat(
+  accessToken, "&language=").concat(language, "&app=iot");
   socketTask = uni.connectSocket({
     url: socketUrl,
     header: {
@@ -5291,12 +5328,14 @@ function connectSocket() {
 
 }
 
-function openSocket(openMessageTxt, closeMessageTxt) {
+function openSocket(that, openMessageTxt, closeMessageTxt) {
   var openMessage = uni.getStorageSync('openMessage') || false;
   socketTask.onOpen(function (res) {
     // console.log("WebSocket连接正常打开中...！");
     // 注：只有连接正常打开中 ，才能正常成功发送消息
     if (openMessage) {
+      var time = 1000 * 60 * 60 * 1;
+      intervalID = setInterval(bindUserSocket, time);
       bindUserSocket(openMessageTxt);
     } else {
       unBindUserSocket();
@@ -5307,18 +5346,45 @@ function openSocket(openMessageTxt, closeMessageTxt) {
       showToast(msg, 'none', 1000, false);
     });
     socketTask.onClose(function (res) {
-      // console.log("关闭回调" + res.data);
-      connectSocket();
-      openSocket();
+      // console.log('onClose-------------')
+      // let date = new Date ()
+      // console.log(date)
+      var promise = useOpenidLogin(that);
+      promise.then(function () {
+        var isLogin = uni.getStorageSync('isLogin');
+        if (isLogin) {
+          // console.log('重连-------------')
+          connectSocket();
+          openSocket();
+        } else {
+          // console.log("关闭回调" + res['reason']);
+        }
+      });
+    });
+    socketTask.onError(function (res) {
+      // console.log("发生错误--------------" + res);
     });
   });
 }
 
+function closeSocket() {
+  clearInterval(intervalID);
+  socketTask.close({
+    success: function success(res) {
+      // console.log('关闭成功', res)
+    },
+    fail: function fail(err) {
+      // console.log('关闭失败', err)
+    } });
+
+}
+
 function bindUserSocket(openMessageTxt) {
   openMessageTxt && showToast(openMessageTxt, 'none', 1000, false);
+  var userId = uni.getStorageSync('userId');
   var data = {
-    cmd: 'bindUser',
-    param: uni.getStorageSync('userId') };
+    cmd: 'bindRoom',
+    param: "iot:user:".concat(userId) };
 
   socketTask.send({
     data: JSON.stringify(data),
@@ -5330,9 +5396,10 @@ function bindUserSocket(openMessageTxt) {
 
 function unBindUserSocket(closeMessageTxt) {
   closeMessageTxt && showToast(closeMessageTxt, 'none', 1000, false);
+  var userId = uni.getStorageSync('userId');
   var data = {
-    cmd: 'unBindUser',
-    param: uni.getStorageSync('userId') };
+    cmd: 'unBindRoom',
+    param: "iot:user:".concat(userId) };
 
   socketTask.send({
     data: JSON.stringify(data),
@@ -5340,6 +5407,59 @@ function unBindUserSocket(closeMessageTxt) {
       // console.log('解绑成功');
       return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:case "end":return _context2.stop();}}}, _callee2);}))();} });
 
+}
+
+function useOpenidLogin(that) {
+  var openid = uni.getStorageSync('openid');
+  var companyId = uni.getStorageSync('companyId');
+  return new Promise(function (resolve, reject) {
+
+    var promise = tokenApi.userLogin(that, {
+      companyId: companyId,
+      openid: openid,
+      getType: 'wxApp' });
+
+
+
+
+
+
+
+
+
+    promise.then(function (res) {
+      if (res.status) {
+        switch (res.code) {
+          case '200':var _res$data2 =
+
+
+
+
+
+
+
+            res.data,userId = _res$data2.userId,userName = _res$data2.userName,devKey = _res$data2.devKey,accessToken = _res$data2.accessToken,singleLogin = _res$data2.singleLogin,language = _res$data2.language;
+            var languageIndex = language == 'zh' ? 0 : 1;
+            uni.setStorageSync('userId', userId);
+            uni.setStorageSync('userName', userName);
+            uni.setStorageSync('devKey', devKey);
+            uni.setStorageSync('accessToken', accessToken);
+            uni.setStorageSync('singleLogin', singleLogin);
+            uni.setStorageSync('language', language);
+            uni.setStorageSync('languageIndex', languageIndex);
+            uni.setStorageSync('isLogin', true);
+            break;
+          case '201':
+            uni.setStorageSync('isLogin', false);
+            break;
+          default:
+            that.$uniUtilsApi.showToast(that.i18n.login.unknownError, 'none', 1000, false); //未知错误
+            break;}
+
+        resolve();
+      }
+    });
+  });
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
@@ -13233,6 +13353,31 @@ WxsMixin;exports.default = _default;
 /***/ }),
 
 /***/ 24:
+/*!********************************************************************************************!*\
+  !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/tokenApi/tokenApi.js ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.userLogin = userLogin;exports.loginOut = loginOut;exports.experience = experience;function userLogin(that, params) {
+  var promise = that.$uniBaseRequest(that, '/token/get', params);
+  return promise;
+}
+
+function loginOut(that, params) {
+  var promise = that.$uniBaseRequest(that, '/token/delete', params);
+  return promise;
+}
+
+function experience(that, params) {
+  var promise = that.$uniBaseRequest(that, '/token/get', params);
+  return promise;
+}
+
+/***/ }),
+
+/***/ 25:
 /*!******************************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/userApi/userApi.js ***!
   \******************************************************************************************/
@@ -13316,7 +13461,7 @@ function userExperience(that, params) {
 
 /***/ }),
 
-/***/ 25:
+/***/ 26:
 /*!************************************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/companyApi/companyApi.js ***!
   \************************************************************************************************/
@@ -13340,7 +13485,7 @@ function getCompanyInfo(that, params) {
 
 /***/ }),
 
-/***/ 26:
+/***/ 27:
 /*!****************************************************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceInfoApi/deviceInfoApi.js ***!
   \****************************************************************************************************************/
@@ -13379,7 +13524,7 @@ function refreshStatus(that, deviceCore) {
 
 /***/ }),
 
-/***/ 27:
+/***/ 28:
 /*!*******************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/clipboard/clipboard.js ***!
   \*******************************************************************/
@@ -13387,7 +13532,7 @@ function refreshStatus(that, deviceCore) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.handleClipboard = handleClipboard;var _clipboard = _interopRequireDefault(__webpack_require__(/*! clipboard */ 28));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+Object.defineProperty(exports, "__esModule", { value: true });exports.handleClipboard = handleClipboard;var _clipboard = _interopRequireDefault(__webpack_require__(/*! clipboard */ 29));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 function handleClipboard(_text, event, onSuccess, onError) {
   event = event || {};
@@ -13411,7 +13556,7 @@ function handleClipboard(_text, event, onSuccess, onError) {
 
 /***/ }),
 
-/***/ 28:
+/***/ 29:
 /*!************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/node_modules/clipboard/dist/clipboard.js ***!
   \************************************************************************/
@@ -14389,88 +14534,6 @@ function handleClipboard(_text, event, onSuccess, onError) {
 
 /***/ }),
 
-/***/ 29:
-/*!***********************************************************!*\
-  !*** F:/中泰能uniapp/ztn-uniapp/common/utils/error/error.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.requestError = requestError;exports.settingError = settingError;function requestError(that, code, code2) {
-  var error;
-  switch (code) {
-    case '401':
-      error = that.i18n.login.loginOverdue; //'登录过期'
-      break;
-    case '402':
-      switch (code2) {
-        case 'userId':
-          error = that.i18n.login.checkParam; //检查参数
-          break;
-        case 'oldPassword':
-          error = that.i18n.login.oldPasswordError; //旧密码错误
-          break;
-        default:
-          error = that.i18n.login.checkParam; //检查参数
-      }
-      break;
-    case '403':
-      error = that.i18n.login.authorityDeficiency; //权限不足
-      break;
-    case '501':
-      error = that.i18n.login.againLater; //稍后重试
-      break;
-    case '502':
-      error = settingError(that, code2);
-      break;
-    default:
-      error = that.i18n.login.unknownError; //未知错误
-  }
-  return {
-    code: code,
-    code2: code2,
-    error: error };
-
-}
-
-
-function settingError(that, code) {
-  var error;
-  switch (code) {
-    case '1':
-      error = that.i18n.deviceController.wrongPort; //'端口有误'
-      break;
-    case '2':
-      error = that.i18n.deviceController.wrongCommand; //'命令有误'
-      break;
-    case '3':
-      error = that.i18n.deviceController.wrongParameter; //'参数有误'
-      break;
-    case '4':
-      error = that.i18n.setFail; //'设置失败'
-      break;
-    case '5':
-      error = that.i18n.deviceController.hardwareNotSupport; //'硬件不支持'
-      break;
-    case '602':
-      error = that.i18n.deviceController.operateTooFast; //'操作过快'
-      break;
-    case '603':
-      error = that.i18n.deviceController.equipmentOffline; //'设备不在线'
-      break;
-    case '604':
-      error = that.i18n.deviceController.deviceResponseTimeout; //'设备回应超时'
-      break;
-    case '606':
-      error = that.i18n.deviceController.serviceNotSupport; //'服务不支持'
-      break;}
-
-  return error;
-}
-
-/***/ }),
-
 /***/ 298:
 /*!**************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/mpvue-echarts/src/wx-canvas.js ***!
@@ -14586,6 +14649,88 @@ module.exports = g;
 /***/ }),
 
 /***/ 30:
+/*!***********************************************************!*\
+  !*** F:/中泰能uniapp/ztn-uniapp/common/utils/error/error.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.requestError = requestError;exports.settingError = settingError;function requestError(that, code, code2) {
+  var error;
+  switch (code) {
+    case '401':
+      error = that.i18n.login.loginOverdue; //'登录过期'
+      break;
+    case '402':
+      switch (code2) {
+        case 'userId':
+          error = that.i18n.login.checkParam; //检查参数
+          break;
+        case 'oldPassword':
+          error = that.i18n.login.oldPasswordError; //旧密码错误
+          break;
+        default:
+          error = that.i18n.login.checkParam; //检查参数
+      }
+      break;
+    case '403':
+      error = that.i18n.login.authorityDeficiency; //权限不足
+      break;
+    case '501':
+      error = that.i18n.login.againLater; //稍后重试
+      break;
+    case '502':
+      error = settingError(that, code2);
+      break;
+    default:
+      error = that.i18n.login.unknownError; //未知错误
+  }
+  return {
+    code: code,
+    code2: code2,
+    error: error };
+
+}
+
+
+function settingError(that, code) {
+  var error;
+  switch (code) {
+    case '1':
+      error = that.i18n.deviceController.wrongPort; //'端口有误'
+      break;
+    case '2':
+      error = that.i18n.deviceController.wrongCommand; //'命令有误'
+      break;
+    case '3':
+      error = that.i18n.deviceController.wrongParameter; //'参数有误'
+      break;
+    case '4':
+      error = that.i18n.setFail; //'设置失败'
+      break;
+    case '5':
+      error = that.i18n.deviceController.hardwareNotSupport; //'硬件不支持'
+      break;
+    case '602':
+      error = that.i18n.deviceController.operateTooFast; //'操作过快'
+      break;
+    case '603':
+      error = that.i18n.deviceController.equipmentOffline; //'设备不在线'
+      break;
+    case '604':
+      error = that.i18n.deviceController.deviceResponseTimeout; //'设备回应超时'
+      break;
+    case '606':
+      error = that.i18n.deviceController.serviceNotSupport; //'服务不支持'
+      break;}
+
+  return error;
+}
+
+/***/ }),
+
+/***/ 31:
 /*!************************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/baseRequest/baseRequest.js ***!
   \************************************************************************************/
@@ -14665,7 +14810,7 @@ function handleError(that, data) {
 
 /***/ }),
 
-/***/ 31:
+/***/ 32:
 /*!**************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/node_modules/js-md5/src/md5.js ***!
   \**************************************************************/
@@ -14698,7 +14843,7 @@ function handleError(that, data) {
     root = self;
   }
   var COMMON_JS = !root.JS_MD5_NO_COMMON_JS && typeof module === 'object' && module.exports;
-  var AMD =  true && __webpack_require__(/*! !webpack amd options */ 34);
+  var AMD =  true && __webpack_require__(/*! !webpack amd options */ 35);
   var ARRAY_BUFFER = !root.JS_MD5_NO_ARRAY_BUFFER && typeof ArrayBuffer !== 'undefined';
   var HEX_CHARS = '0123456789abcdef'.split('');
   var EXTRA = [128, 32768, 8388608, -2147483648];
@@ -15356,11 +15501,11 @@ function handleError(that, data) {
     }
   }
 })();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 32), __webpack_require__(/*! (webpack)/buildin/global.js */ 3)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 33), __webpack_require__(/*! (webpack)/buildin/global.js */ 3)))
 
 /***/ }),
 
-/***/ 32:
+/***/ 33:
 /*!********************************************************!*\
   !*** ./node_modules/node-libs-browser/mock/process.js ***!
   \********************************************************/
@@ -15391,7 +15536,7 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 33);
+        if (!path) path = __webpack_require__(/*! path */ 34);
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -15405,7 +15550,7 @@ exports.features = {};
 
 /***/ }),
 
-/***/ 33:
+/***/ 34:
 /*!***********************************************!*\
   !*** ./node_modules/path-browserify/index.js ***!
   \***********************************************/
@@ -15715,11 +15860,11 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 32)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 33)))
 
 /***/ }),
 
-/***/ 34:
+/***/ 35:
 /*!****************************************!*\
   !*** (webpack)/buildin/amd-options.js ***!
   \****************************************/
@@ -15733,7 +15878,7 @@ module.exports = __webpack_amd_options__;
 
 /***/ }),
 
-/***/ 35:
+/***/ 36:
 /*!**************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/filter/filters.js ***!
   \**************************************************************/
@@ -15742,8 +15887,8 @@ module.exports = __webpack_amd_options__;
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _formatTime = __webpack_require__(/*! ./formatTime/formatTime.js */ 23);
-var _numToBool = __webpack_require__(/*! ./numToBool/numToBool.js */ 36);
-var _getFirstString = __webpack_require__(/*! ./getFirstString/getFirstString.js */ 37);var _default =
+var _numToBool = __webpack_require__(/*! ./numToBool/numToBool.js */ 37);
+var _getFirstString = __webpack_require__(/*! ./getFirstString/getFirstString.js */ 38);var _default =
 
 {
   formatDateTime: _formatTime.formatDateTime,
@@ -15753,7 +15898,7 @@ var _getFirstString = __webpack_require__(/*! ./getFirstString/getFirstString.js
 
 /***/ }),
 
-/***/ 36:
+/***/ 37:
 /*!**************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/filter/numToBool/numToBool.js ***!
   \**************************************************************************/
@@ -15771,7 +15916,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.numToBool 
 
 /***/ }),
 
-/***/ 37:
+/***/ 38:
 /*!************************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/filter/getFirstString/getFirstString.js ***!
   \************************************************************************************/
@@ -15793,95 +15938,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.getFirstSt
 /***/ (function(module, exports) {
 
 
-
-/***/ }),
-
-/***/ 49:
-/*!********************************************************************************************************************!*\
-  !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceBelongApi/deviceBelongApi.js ***!
-  \********************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.getProvinceDeviceNum = getProvinceDeviceNum;exports.getCityDeviceNum = getCityDeviceNum;exports.getAreaDeviceNum = getAreaDeviceNum;exports.MarkerGetDeviceList = MarkerGetDeviceList;exports.getDeviceList = getDeviceList;exports.getProductTypeList = getProductTypeList;exports.getDeviceStatusCount = getDeviceStatusCount;exports.getProductSeries = getProductSeries;
-// 按省级获取设备数量
-function getProvinceDeviceNum(that) {
-  var promise = that.$uniBaseRequest(that, '/device/belong/provinceNum', {});
-  return promise;
-}
-
-// 按城市获取设备数量
-function getCityDeviceNum(that, param) {
-  var promise = that.$uniBaseRequest(that, '/device/belong/cityNum', param);
-  return promise;
-}
-
-// 按城市获取设备数量
-function getAreaDeviceNum(that, cityId, currentPage, pageSize) {
-  var promise = that.$uniBaseRequest(that, '/device/belong/pageGetDevice', {
-    cityId: cityId,
-    currentPage: currentPage,
-    pageSize: pageSize });
-
-  return promise;
-}
-
-// 点击Marker获取设备列表
-function MarkerGetDeviceList(that, provinceId, cityId, productId, deviceStatus, currentPage, pageSize) {
-  return pageGetDevice(that, {
-    provinceId: provinceId,
-    cityId: cityId,
-    productId: productId,
-    status: deviceStatus,
-    currentPage: currentPage,
-    pageSize: pageSize });
-
-}
-
-//deviceList页面获取设备列表
-function getDeviceList(that, userId, deviceStatus, productId, seriesId, deviceName, todayOnline, warnDesc, groupId,
-currentPage,
-pageSize) {
-  return pageGetDevice(that, {
-    userId: userId,
-    status: deviceStatus,
-    productId: productId,
-    seriesId: seriesId,
-    deviceName: deviceName,
-    todayOnline: todayOnline,
-    warnDesc: warnDesc,
-    groupId: groupId,
-    currentPage: currentPage,
-    pageSize: pageSize });
-
-}
-
-function pageGetDevice(that, param) {
-  var promise = that.$uniBaseRequest(that, '/device/belong/pageGetDevice', param);
-  return promise;
-}
-
-function getDeviceStatusCount(that) {
-  var promise = that.$uniBaseRequest(that, '/device/belong/statusNum', {});
-  return promise;
-}
-
-// 获取类型列表
-function getProductTypeList(that, userId) {
-  var promise = that.$uniBaseRequest(that, '/device/belong/productNum', {
-    userId: userId });
-
-  return promise;
-}
-
-function getProductSeries(that, userId, productId) {
-  var promise = that.$uniBaseRequest(that, '/device/belong/seriesNum', {
-    userId: userId,
-    productId: productId });
-
-  return promise;
-}
 
 /***/ }),
 
@@ -16873,6 +16929,102 @@ main();
 
 /***/ 50:
 /*!********************************************************************************************************************!*\
+  !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceBelongApi/deviceBelongApi.js ***!
+  \********************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.getProvinceDeviceNum = getProvinceDeviceNum;exports.getCityDeviceNum = getCityDeviceNum;exports.getAreaDeviceNum = getAreaDeviceNum;exports.byMarkerGetDeviceList = byMarkerGetDeviceList;exports.byMarkerPageGetDeviceList = byMarkerPageGetDeviceList;exports.getDeviceList = getDeviceList;exports.getProductTypeList = getProductTypeList;exports.getDeviceStatusCount = getDeviceStatusCount;exports.getProductSeries = getProductSeries;
+// 按省级获取设备数量
+function getProvinceDeviceNum(that) {
+  var promise = that.$uniBaseRequest(that, '/device/belong/provinceNum', {});
+  return promise;
+}
+
+// 按城市获取设备数量
+function getCityDeviceNum(that, param) {
+  var promise = that.$uniBaseRequest(that, '/device/belong/cityNum', param);
+  return promise;
+}
+
+// 按城市获取设备数量
+function getAreaDeviceNum(that, cityId, currentPage, pageSize) {
+  var promise = that.$uniBaseRequest(that, '/device/belong/pageGetDevice', {
+    cityId: cityId,
+    currentPage: currentPage,
+    pageSize: pageSize });
+
+  return promise;
+}
+
+// 点击Marker获取所有设备列表
+function byMarkerGetDeviceList(that, provinceId) {
+  var promise = that.$uniBaseRequest(that, '/device/belong/listDevice', {
+    provinceId: provinceId });
+
+  return promise;
+}
+
+// 点击Marker获取分页设备列表
+function byMarkerPageGetDeviceList(that, provinceId, cityId, productId, deviceStatus, currentPage, pageSize) {
+  return pageGetDevice(that, {
+    provinceId: provinceId,
+    cityId: cityId,
+    productId: productId,
+    status: deviceStatus,
+    currentPage: currentPage,
+    pageSize: pageSize });
+
+}
+
+//deviceList页面获取设备列表
+function getDeviceList(that, userId, deviceStatus, productId, seriesId, deviceName, todayOnline, warnDesc, groupId,
+currentPage,
+pageSize) {
+  return pageGetDevice(that, {
+    userId: userId,
+    status: deviceStatus,
+    productId: productId,
+    seriesId: seriesId,
+    deviceName: deviceName,
+    todayOnline: todayOnline,
+    warnDesc: warnDesc,
+    groupId: groupId,
+    currentPage: currentPage,
+    pageSize: pageSize });
+
+}
+
+function pageGetDevice(that, param) {
+  var promise = that.$uniBaseRequest(that, '/device/belong/pageGetDevice', param);
+  return promise;
+}
+
+function getDeviceStatusCount(that) {
+  var promise = that.$uniBaseRequest(that, '/device/belong/statusNum', {});
+  return promise;
+}
+
+function getProductTypeList(that, userId) {
+  var promise = that.$uniBaseRequest(that, '/device/belong/productNum', {
+    userId: userId });
+
+  return promise;
+}
+
+function getProductSeries(that, userId, productId) {
+  var promise = that.$uniBaseRequest(that, '/device/belong/seriesNum', {
+    userId: userId,
+    productId: productId });
+
+  return promise;
+}
+
+/***/ }),
+
+/***/ 51:
+/*!********************************************************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceCameraApi/deviceCameraApi.js ***!
   \********************************************************************************************************************/
 /*! no static exports found */
@@ -16939,7 +17091,7 @@ function sendActionCommand(that, deviceId, action) {
 
 /***/ }),
 
-/***/ 58:
+/***/ 59:
 /*!**************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/components/mescroll-uni/mescroll-mixins.js ***!
   \**************************************************************************/
@@ -17026,7 +17178,7 @@ module.exports = JSON.parse("{\"_from\":\"@dcloudio/uni-stat@next\",\"_id\":\"@d
 
 /***/ }),
 
-/***/ 66:
+/***/ 67:
 /*!******************************************************************************************************************!*\
   !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceGroupApi/deviceGroupApi.js ***!
   \******************************************************************************************************************/
@@ -17052,31 +17204,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.getProduct
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "appid": "__UNI__708E9E1" };exports.default = _default;
-
-/***/ }),
-
-/***/ 72:
-/*!********************************************************************************************!*\
-  !*** F:/中泰能uniapp/ztn-uniapp/common/utils/ztnUniAppApi/ztnRequestApi/tokenApi/tokenApi.js ***!
-  \********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.userLogin = userLogin;exports.loginOut = loginOut;exports.experience = experience;function userLogin(that, params) {
-  var promise = that.$uniBaseRequest(that, '/token/get', params);
-  return promise;
-}
-
-function loginOut(that, params) {
-  var promise = that.$uniBaseRequest(that, '/token/delete', params);
-  return promise;
-}
-
-function experience(that, params) {
-  var promise = that.$uniBaseRequest(that, '/token/get', params);
-  return promise;
-}
 
 /***/ }),
 

@@ -1,6 +1,7 @@
 import io from '@hyoga/uni-socket.io'
 import messages from '@/common/utils/messages/messages.js'
 import * as formatTime from '@/common/utils/filter/formatTime/formatTime.js'
+import * as tokenApi from '@/common/utils/ztnUniAppApi/ztnRequestApi/tokenApi/tokenApi.js'
 import * as userApi from '@/common/utils/ztnUniAppApi/ztnRequestApi/userApi/userApi.js'
 import * as companyApi from '@/common/utils/ztnUniAppApi/ztnRequestApi/companyApi/companyApi.js'
 import * as deviceInfoApi from '@/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceInfoApi/deviceInfoApi.js'
@@ -379,15 +380,14 @@ function toHome(that) {
 }
 
 var socketTask;
+var intervalID;
 
 function connectSocket() {
-	let userId = uni.getStorageSync('userId')
-	let companyId = uni.getStorageSync('companyId')
-	let devKey = uni.getStorageSync('devKey')
+	if(socketTask){closeSocket()}
 	let accessToken = uni.getStorageSync('accessToken')
 	let language = uni.getStorageSync('language')
 	let socketUrl =
-		`wss://core.ztn-tech.com/ws?userId=${userId}&companyId=${companyId}&devKey=${devKey}&accessToken=${accessToken}&language=${language}&app=iot`
+		`wss://core.ztn-tech.com/ws?accessToken=${accessToken}&language=${language}&app=iot`
 	socketTask = uni.connectSocket({
 		url: socketUrl,
 		header: {
@@ -400,12 +400,14 @@ function connectSocket() {
 	});
 }
 
-function openSocket(openMessageTxt, closeMessageTxt) {
+function openSocket(that,openMessageTxt, closeMessageTxt) {
 	let openMessage = uni.getStorageSync('openMessage') || false
 	socketTask.onOpen((res) => {
 		// console.log("WebSocket连接正常打开中...！");
 		// 注：只有连接正常打开中 ，才能正常成功发送消息
 		if (openMessage) {
+			let time = 1000 * 60 * 60 * 1
+			intervalID = setInterval(bindUserSocket,time)
 			bindUserSocket(openMessageTxt)
 		} else {
 			unBindUserSocket()
@@ -416,18 +418,45 @@ function openSocket(openMessageTxt, closeMessageTxt) {
 			showToast(msg, 'none', 1000, false)
 		});
 		socketTask.onClose((res) => {
-			// console.log("关闭回调" + res.data);
-			connectSocket()
-			openSocket()
+			// console.log('onClose-------------')
+			// let date = new Date ()
+			// console.log(date)
+			let promise = useOpenidLogin(that)
+			promise.then(()=>{
+				let isLogin = uni.getStorageSync('isLogin')
+				if (isLogin) {
+					// console.log('重连-------------')
+					connectSocket()
+					openSocket()
+				} else {
+					// console.log("关闭回调" + res['reason']);
+				}
+			})
 		})
+		socketTask.onError((res) => {
+			// console.log("发生错误--------------" + res);
+		})
+	})
+}
+
+function closeSocket() {
+	clearInterval(intervalID)
+	socketTask.close({
+		success: (res) => {
+			// console.log('关闭成功', res)
+		},
+		fail: (err) => {
+			// console.log('关闭失败', err)
+		}
 	})
 }
 
 function bindUserSocket(openMessageTxt) {
 	openMessageTxt && showToast(openMessageTxt, 'none', 1000, false)
+	let userId = uni.getStorageSync('userId')
 	let data = {
-		cmd: 'bindUser',
-		param: uni.getStorageSync('userId')
+		cmd: 'bindRoom',
+		param:`iot:user:${userId}` 
 	}
 	socketTask.send({
 		data: JSON.stringify(data),
@@ -439,9 +468,10 @@ function bindUserSocket(openMessageTxt) {
 
 function unBindUserSocket(closeMessageTxt) {
 	closeMessageTxt && showToast(closeMessageTxt, 'none', 1000, false)
+	let userId = uni.getStorageSync('userId')
 	let data = {
-		cmd: 'unBindUser',
-		param: uni.getStorageSync('userId')
+		cmd: 'unBindRoom',
+		param:`iot:user:${userId}`  
 	}
 	socketTask.send({
 		data: JSON.stringify(data),
@@ -449,6 +479,59 @@ function unBindUserSocket(closeMessageTxt) {
 			// console.log('解绑成功');
 		},
 	});
+}
+
+function useOpenidLogin(that) {
+	let openid = uni.getStorageSync('openid')
+	let companyId = uni.getStorageSync('companyId')
+	return new Promise((resolve, reject) => {
+		//#ifdef MP-WEIXIN
+		var promise = tokenApi.userLogin(that, {
+			companyId: companyId,
+			openid: openid,
+			getType: 'wxApp',
+		})
+		//#endif
+		//#ifdef H5
+		var promise = tokenApi.userLogin(that, {
+			companyId: companyId,
+			openid: openid,
+			getType: 'gzh'
+		})
+		//#endif
+		promise.then((res) => {
+			if (res.status) {
+				switch (res.code) {
+					case '200':
+						let {
+							userId,
+							userName,
+							devKey,
+							accessToken,
+							singleLogin,
+							language
+						} = res.data
+						let languageIndex = language == 'zh' ? 0 : 1
+						uni.setStorageSync('userId', userId)
+						uni.setStorageSync('userName', userName)
+						uni.setStorageSync('devKey', devKey)
+						uni.setStorageSync('accessToken', accessToken)
+						uni.setStorageSync('singleLogin', singleLogin)
+						uni.setStorageSync('language', language)
+						uni.setStorageSync('languageIndex', languageIndex)
+						uni.setStorageSync('isLogin', true)
+						break;
+					case '201':
+						uni.setStorageSync('isLogin', false)
+						break;
+					default:
+						that.$uniUtilsApi.showToast(that.i18n.login.unknownError, 'none', 1000, false) //未知错误
+						break;
+				}
+				resolve()
+			}
+		})
+	})
 }
 
 
@@ -471,6 +554,7 @@ export {
 	toHome,
 	connectSocket,
 	openSocket,
+	closeSocket,
 	bindUserSocket,
 	unBindUserSocket
 }

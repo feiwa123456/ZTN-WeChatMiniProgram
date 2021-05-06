@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<cu-custom :isBack="false"></cu-custom>
-		<map id="myMap" ref="myMap" style="width:100%;height:100vh" :scale="scale" :longitude="longitude" :latitude="latitude"
-		 :markers="markers" @markertap="markertap" @regionchange="regionchange"></map>
+		<map v-if="isShowMap" id="myMap" ref="myMap" style="width:100%;height:100vh" :scale="scale" :longitude="longitude"
+		 :latitude="latitude" :markers="markers" @markertap="markertap" @regionchange="regionchange"></map>
 		<view v-if="isShowDeviceList" class="ztnCustom-background-color" style="background: rgba(112, 200, 226,0.2);">
 			<view class="cu-bar bg-white solid-bottom" :style="[{top:CustomBar + 'px'}]">
 				<view class="flex align-center justify-start margin" style="white-space: nowrap">
@@ -23,7 +23,7 @@
 						<image class="ztnCustom-hideIcon" :src="hideIcon"></image>
 					</view>
 					<mescroll-uni ref="mescrollRef" @init="mescrollInit" height="800upx" top="10" :down="downOption" @down="downCallback"
-					 :up="upOption" @up="markerGetDeviceList">
+					 :up="upOption" @up="byMarkerPageGetDeviceList">
 						<view v-for="(arrItem,arrIndex) in deviceList" :key="arrIndex">
 							<view v-for="(item,index) in arrItem" :key="index">
 								<view :class="modalDeviceName == item.deviceName?'ztnCustom-move-cur':''" class="flex align-center padding-tb solid-bottom ztnCustom-cur"
@@ -59,6 +59,15 @@
 			</view>
 		</view>
 
+		<view v-else style="position:fixed;top:0;right:0;z-index: 1024" :style="[{top:CustomBar + 'px'}]">
+			<view class="text-center margin">
+				<text class="cuIcon-list" style="border-top-left-radius:6px;border-bottom-left-radius:6px;padding: 15rpx 30rpx;font-size: 36rpx"
+				 :style="showMode == 'listMode' ? selectStyle : unselectStyle" @tap="tapMode('listMode')"></text>
+				<text class="cuIcon-radiobox" style="border-top-right-radius:6px;border-bottom-right-radius:6px;padding: 15rpx 30rpx;font-size: 36rpx;"
+				 :style="showMode == 'pointMode' ? selectStyle : unselectStyle" @tap="tapMode('pointMode')"></text>
+			</view>
+		</view>
+
 		<!--  #ifdef H5 || MP-WEIXIN  -->
 		<mapFav v-if="!isLogin" class="ztnCustom-mapFav" v-on:parentEvent="goToLogin" :loginForMore="i18n.leadGotoLogin.loginForMore"
 		 :immediateLoginText="i18n.leadGotoLogin.immediateLoginText"></mapFav>
@@ -89,16 +98,22 @@
 				CustomBar: this.CustomBar,
 				isLogin: true,
 				isLoginOverdue: false,
+				isShowMap: true,
+				showMode: '',
+				selectStyle: '',
+				unselectStyle: '',
+				enlargeScaleToListMode: false,
+				enlargeScaleToPointMode: false,
 				scale: 4.5,
-				enlargeScale: false,
+				beforeScale: 4.5,
 				longitude: 114.324520,
 				latitude: 27.099994,
 				markers: [],
 				markerId: Number,
-				productId: null,
-				status: null,
 				currentPage: 1,
 				pageSize: 10,
+				productId: null,
+				status: null,
 				currentStatusIndex: 0,
 				currentTypeIndex: 0,
 				productTypeList: [],
@@ -116,7 +131,15 @@
 		computed: {
 			i18n() {
 				return this.$i18nMsg()
+			},
+			themei18n() {
+				return this.$themei18nOption()
 			}
+		},
+		beforeMount: function() {
+			let emphasizeColor = this.themei18n.emphasizeColor
+			this.selectStyle = `background:${emphasizeColor};color:#fff;border:2upx solid ${emphasizeColor}`
+			this.unselectStyle = `background:#fff;color:${emphasizeColor};border:2upx solid ${emphasizeColor}`
 		},
 		mounted: function() {
 			let isLogin = uni.getStorageSync('isLogin') || false
@@ -125,113 +148,199 @@
 		},
 		methods: {
 			init: function() {
+				let showMode = uni.getStorageSync('showMode') || 'listMode'
+				this.showMode = showMode
 				this.getProductTypeList()
-				this.enlargeScale ? this.getCityDeviceNum() : this.getProvinceDeviceNum()
+				this.getProvinceDeviceNum()
 			},
-			goToLogin: function(e) {
-				uni.navigateTo({
-					url: `/pages/login/login`
-				});
-			},
-			getProductTypeList: function() {
-				let userId = uni.getStorageSync('userId')
-				deviceBelongApi.getProductTypeList(this, userId).then((res) => {
-					if (res.code == '200') {
-						let data = res.data
-						let {
-							productTypeList,
-							productTypeData
-						} = this.$uniUtilsApi.handleProductType(this, data)
-						this.productTypeList = productTypeList
-						this.productTypeData = productTypeData
-					}
+			tapMode: function(option) {
+				let showMode = this.showMode
+				if (showMode == option) return
+				this.isShowMap = false
+				this.$nextTick(() => {
+					this.markers = []
+					this.isShowMap = true
+					this.showMode = option
+					this.enlargeScaleToListMode = false
+					this.enlargeScaleToPointMode = false
+					this.scale = 4.5
+					this.longitude = 114.324520
+					this.latitude = 27.099994
+					this.markerId = null
+					this.getProvinceDeviceNum()
+					uni.setStorageSync('showMode', option)
 				})
 			},
 			getProvinceDeviceNum: function() {
 				deviceBelongApi.getProvinceDeviceNum(this).then((res) => {
 					if (res.code == '200') {
-						let markers = res.data
-						this.setMarkers(markers)
+						let data = res.data
+						this.setMarkers(data)
 					}
 				})
 			},
 			getCityDeviceNum: function() {
 				deviceBelongApi.getCityDeviceNum(this).then((res) => {
 					if (res.code == '200') {
-						let markers = res.data
-						this.setMarkers(markers)
+						let data = res.data
+						this.setMarkers(data)
 					}
 				})
 			},
-			setMarkers: function(markers) {
+			setMarkers: function(data) {
 				this.markers = []
-				for (let i = 0; i < markers.length; i++) {
+				let markers = []
+				for (let i = 0; i < data.length; i++) {
 					let marker = {}
-					marker.id = Number(markers[i].cityId ? markers[i].cityId : markers[i].provinceId)
-					marker.width = 25;
-					marker.height = 25;
-					marker.latitude = Number(markers[i].lat);
-					marker.longitude = Number(markers[i].lng);
-					if (markers[i].num >= 99) {
-						marker.iconPath = '../../static/numsImage/local_99.png';
+					marker.id = Number(data[i].cityId ? data[i].cityId : data[i].provinceId)
+					marker.width = 25
+					marker.height = 25
+					marker.latitude = Number(data[i].lat)
+					marker.longitude = Number(data[i].lng)
+					if (data[i].num >= 99) {
+						marker.iconPath = '../../static/numsImage/local_99.png'
 					} else {
-						marker.iconPath = '../../static/numsImage/local_' + markers[i].num + '.png';
+						marker.iconPath = '../../static/numsImage/local_' + data[i].num + '.png'
 					}
-					this.$set(this.markers, i, marker)
+					markers.push(marker)
 				}
+				this.markers = markers
+			},
+			setPointMarkers: function(data) {
+				this.$uniUtilsApi.showLoading(this.i18n.loading, true)
+				this.markers = []
+				let markers = []
+				for (let i = 0; i < data.length; i++) {
+					let marker = {}
+					marker.id = i
+					marker.width = 25
+					marker.height = 25
+					marker.latitude = Number(data[i].lat)
+					marker.longitude = Number(data[i].lng)
+					marker.mode = 'point'
+					marker.iconPath = '../../static/images/gps.png'
+					marker.deviceName = data[i].deviceName
+					marker.deviceCore = data[i].deviceCore
+					marker.pageCur = 'deviceInfo'
+					markers.push(marker)
+				}
+				this.markers = markers.length > 6000 ? markers.slice(0, 6000) : markers
+				setTimeout(() => {
+					this.$uniUtilsApi.hideLoading()
+				}, 1000)
 			},
 			markertap: function(e) {
-				// console.log(typeof e.detail.markerId)
-				this.markerId = e.detail.markerId
+				let markerId = e.detail.markerId
+				this.markerId = markerId
+				let showMode = this.showMode
+				showMode == 'listMode' ? this.markertapListMode() : this.markertapPointMode()
+			},
+			markertapListMode: function() {
 				this.isShowDeviceList = true
 				this.$emit('isShowNav', false);
 				this.currentPage = 1
 			},
-			markerGetDeviceList: function() {
-				let enlargeScale = this.enlargeScale
-				let provinceId = enlargeScale ? null : this.markerId
-				let cityId = enlargeScale ? this.markerId : null
+			markertapPointMode: function() {
+				let markers = this.markers
+				let mode = markers[0].mode
+				if (mode == 'point') {
+					let markerId = this.markerId
+					let {
+						deviceName,
+						deviceCore,
+						pageCur
+					} = markers[markerId]
+					this.deviceNavigation(deviceName, deviceCore, pageCur)
+				} else {
+					this.byMarkerGetDeviceList()
+				}
+			},
+			byMarkerPageGetDeviceList: function() {
+				let enlargeScaleToListMode = this.enlargeScaleToListMode
+				let provinceId = enlargeScaleToListMode ? null : this.markerId
+				let cityId = enlargeScaleToListMode ? this.markerId : null
 				let productId = this.productId
 				let status = this.status
 				let currentPage = this.currentPage
 				let pageSize = this.pageSize
-				deviceBelongApi.MarkerGetDeviceList(this, provinceId, cityId, productId, status, currentPage, pageSize).then((res) => {
+				deviceBelongApi.byMarkerPageGetDeviceList(this, provinceId, cityId, productId, status, currentPage, pageSize).then(
+					(
+						res) => {
+						if (res.code == '200') {
+							let {
+								currentPage,
+								data,
+								total
+							} = res.data
+							this.totalDeviceNum = total
+							this.mescroll.endByPage(data.length, total)
+							let index = currentPage - 1
+							let list = this.$uniUtilsApi.initDeviceList(this.i18n.status, data)
+							this.$set(this.deviceList, index, list)
+							this.currentPage = currentPage + 1
+						}
+					})
+			},
+			byMarkerGetDeviceList: function() {
+				let provinceId = this.markerId
+				deviceBelongApi.byMarkerGetDeviceList(this, provinceId).then((res) => {
 					if (res.code == '200') {
-						let {
-							currentPage,
-							data,
-							total
-						} = res.data
-						this.totalDeviceNum = total
-						this.mescroll.endByPage(data.length, total)
-						let index = currentPage - 1
-						let list = this.$uniUtilsApi.initDeviceList(this.i18n.status, data)
-						this.$set(this.deviceList, index, list)
-						this.currentPage = currentPage + 1
+						this.isShowMap = false
+						this.$nextTick(() => {
+							this.isShowMap = true
+							let data = res.data
+							this.setPointMarkers(data)
+							this.latitude = data[0].lat
+							this.longitude = data[0].lng
+							this.scale = 7
+							setTimeout(() => {
+								this.enlargeScaleToPointMode = true
+							}, 1000)
+						})
 					}
 				})
 			},
-			regionchange: function() {
+			getScale: function() {
+				let mapContext = uni.createMapContext('myMap', this);
 				let promise = new Promise((resolve) => {
-					uni.createMapContext('myMap', this).getScale({
+					mapContext.getScale({
 						success: (e) => {
 							resolve(e)
 						}
 					})
 				})
+				return promise
+			},
+			regionchange: function() {
+				let promise = this.getScale()
 				promise.then((e) => {
-					this.getDeviceNum(e)
+					let showMode = this.showMode
+					if (showMode == 'listMode') {
+						this.getDeviceNumToListMode(e)
+					} else if (showMode == 'pointMode') {
+						this.getDeviceNumToPointMode(e)
+					}
 				})
 			},
-			getDeviceNum: function(e) {
-				let enlargeScale = this.enlargeScale
+			getDeviceNumToListMode: function(e) {
 				let scale = e.scale
-				if (scale < 7 && enlargeScale) {
+				let enlargeScaleToListMode = this.enlargeScaleToListMode
+				if (scale < 6 && enlargeScaleToListMode) {
 					this.getProvinceDeviceNum()
-					this.enlargeScale = false
-				} else if (scale >= 7 && !enlargeScale) {
+					this.enlargeScaleToListMode = false
+				} else if (scale >= 6 && !enlargeScaleToListMode) {
 					this.getCityDeviceNum()
-					this.enlargeScale = true
+					this.enlargeScaleToListMode = true
+				}
+			},
+			getDeviceNumToPointMode: function(e) {
+				let scale = e.scale
+				let beforeScale = this.beforeScale
+				this.beforeScale = e.scale
+				let enlargeScaleToPointMode = this.enlargeScaleToPointMode
+				if (scale < 6 && scale < beforeScale && enlargeScaleToPointMode) {
+					this.enlargeScaleToPointMode = false
+					this.getProvinceDeviceNum()
 				}
 			},
 			hideDeviceList: function() {
@@ -281,6 +390,20 @@
 					}
 				})
 			},
+			getProductTypeList: function() {
+				let userId = uni.getStorageSync('userId')
+				deviceBelongApi.getProductTypeList(this, userId).then((res) => {
+					if (res.code == '200') {
+						let data = res.data
+						let {
+							productTypeList,
+							productTypeData
+						} = this.$uniUtilsApi.handleProductType(this, data)
+						this.productTypeList = productTypeList
+						this.productTypeData = productTypeData
+					}
+				})
+			},
 			productStatusChange: function(e) {
 				let statusArray = [null, 'ONLINE', 'OFFLINE', 'UNACTIVE', 'DISABLE']
 				let index = e.detail.value
@@ -297,6 +420,11 @@
 				this.currentPage = 1
 				this.deviceList = []
 				this.mescroll.resetUpScroll()
+			},
+			goToLogin: function(e) {
+				uni.navigateTo({
+					url: `/pages/login/login`
+				})
 			},
 		},
 		components: {

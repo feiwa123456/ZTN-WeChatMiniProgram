@@ -284,7 +284,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var deviceControllerApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceControllerApi/deviceControllerApi.js */ 106));
 var deviceSensorApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceSensorApi/deviceSensorApi.js */ 100));
-var deviceCameraApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceCameraApi/deviceCameraApi.js */ 50));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}var circleComponent = function circleComponent() {__webpack_require__.e(/*! require.ensure | components/ztn-custom/circleComponent/circleComponent */ "components/ztn-custom/circleComponent/circleComponent").then((function () {return resolve(__webpack_require__(/*! @/components/ztn-custom/circleComponent/circleComponent.vue */ 288));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};
+var deviceCameraApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceCameraApi/deviceCameraApi.js */ 51));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}var circleComponent = function circleComponent() {__webpack_require__.e(/*! require.ensure | components/ztn-custom/circleComponent/circleComponent */ "components/ztn-custom/circleComponent/circleComponent").then((function () {return resolve(__webpack_require__(/*! @/components/ztn-custom/circleComponent/circleComponent.vue */ 288));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};
 var hours = [];
 var minutes = [];
 var thours = [];
@@ -470,25 +470,25 @@ for (var _i3 = 0; _i3 < 60; _i3++) {
     changeParam: function changeParam(e) {
       var data = e.currentTarget.dataset;
       var change = data.change;
-      var nowSetting = data.setting || '';
-      var nowPort = data.port || '';
-      var nowChildPort = data.childport || '';
+      var keyName = data.keyname || '';
+      var port = data.port || '';
+      var childPort = data.childport || '';
       switch (change) {
         case 'custom':
           var customValue = e.detail.value.custom;
-          this.saveSetting(customValue, nowSetting, nowPort, nowChildPort);
+          this.saveSetting(customValue, keyName, port, childPort);
           break;
         case 'fixed':
           var fixedValue = data.value;
-          this.saveSetting(fixedValue, nowSetting, nowPort, nowChildPort);
+          this.saveSetting(fixedValue, keyName, port, childPort);
           break;
         case 'switch':
           var switchValue = e.detail.value ? '1' : '0';
-          this.saveSetting(switchValue, nowSetting, nowPort, nowChildPort);
+          this.saveSetting(switchValue, keyName, port, childPort);
           break;
         case 'timeSet':
           var timeSetValue = e.detail.value;
-          this.saveSetting(timeSetValue, nowSetting, nowPort, nowChildPort);
+          this.saveSetting(timeSetValue, keyName, port, childPort);
           break;
         case 'periodTime':
           var index = e.detail.value;
@@ -497,22 +497,22 @@ for (var _i3 = 0; _i3 < 60; _i3++) {
           var thour = this.multiArray[2][index[2]];
           var tminute = this.multiArray[3][index[3]];
           var periodTime = hour + ':' + minute + ' / ' + thour + ':' + tminute;
-          this.saveSetting(periodTime, nowSetting, nowPort, nowChildPort);
+          this.saveSetting(periodTime, keyName, port, childPort);
           break;
         case 'nop':
-          this.saveSetting(null, nowSetting, nowPort, nowChildPort);
+          this.saveSetting(null, keyName, port, childPort);
           break;
         case 'slider':
           var sliderValue = e.detail.value;
-          this.saveSetting(sliderValue, nowSetting, nowPort, nowChildPort);
+          this.saveSetting(sliderValue, keyName, port, childPort);
           break;
         default:}
 
     },
-    saveSetting: function saveSetting(value, setting, port, childPort) {var _this2 = this;
+    saveSetting: function saveSetting(value, keyName, port, childPort) {var _this2 = this;
       this.$uniUtilsApi.showLoading(this.i18n.loading, true);
       var deviceCore = this.deviceCore;
-      deviceControllerApi.saveSetting(this, deviceCore, value, setting, port, childPort).then(function (res) {
+      deviceControllerApi.saveSetting(this, deviceCore, value, keyName, port, childPort).then(function (res) {
         if (res.code == '200') {
           _this2.$uniUtilsApi.hideLoading();
           _this2.$uniUtilsApi.showToast(_this2.i18n.setSuccess, 'none', 1000, true);
@@ -1500,7 +1500,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var deviceSensorApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceSensorApi/deviceSensorApi.js */ 100));
-var deviceCameraApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceCameraApi/deviceCameraApi.js */ 50));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}var circleComponent = function circleComponent() {__webpack_require__.e(/*! require.ensure | components/ztn-custom/circleComponent/circleComponent */ "components/ztn-custom/circleComponent/circleComponent").then((function () {return resolve(__webpack_require__(/*! @/components/ztn-custom/circleComponent/circleComponent.vue */ 288));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+var deviceCameraApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceCameraApi/deviceCameraApi.js */ 51));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}var circleComponent = function circleComponent() {__webpack_require__.e(/*! require.ensure | components/ztn-custom/circleComponent/circleComponent */ "components/ztn-custom/circleComponent/circleComponent").then((function () {return resolve(__webpack_require__(/*! @/components/ztn-custom/circleComponent/circleComponent.vue */ 288));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 {
   data: function data() {
     return {

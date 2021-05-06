@@ -123,6 +123,12 @@ var render = function() {
     _vm.e0 = function($event) {
       _vm.isLogin && _vm.tapHistorical()
     }
+
+    _vm.e1 = function($event) {
+      _vm.explainWarnList.length != 0
+        ? _vm.showCheck()
+        : _vm.unShowExplainWarn()
+    }
   }
 
   _vm.$mp.data = Object.assign(
@@ -298,6 +304,66 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var _uniSocket = _interopRequireDefault(__webpack_require__(/*! @hyoga/uni-socket.io */ 22));
 var formatTime = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/filter/formatTime/formatTime.js */ 23));
 var deviceSensorApi = _interopRequireWildcard(__webpack_require__(/*! @/common/utils/ztnUniAppApi/ztnRequestApi/deviceApi/deviceSensorApi/deviceSensorApi.js */ 100));
@@ -323,14 +389,13 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
       ModelHeight: '',
       realTimeList: [],
       explainId: '',
-      explainName: '',
-      less: '',
-      greater: '',
-      equal: '',
-      wave: '',
+      explainWarnList: [],
+      checkWarnList: [],
+      isShowCheck: false,
+      isShowWarnModel: false,
+      isShowAddWarnModel: false,
       settingError: '',
       showErrorModal: false,
-      isShowAlarm: false,
       isShowFilter: true,
       historyMarginTop: '',
       chartList: [],
@@ -342,7 +407,8 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
       endDate: '',
       endcreatedTime: '',
       selectItemHistory: null,
-      lazyLoad: false };
+      lazyLoad: false,
+      intervalID: null };
 
   },
   computed: {
@@ -389,6 +455,9 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
     isLogin ? this.init(option) : uni.navigateTo({
       url: '/pages/login/login' });
 
+    // let date = new Date()
+    // console.log('-----------')
+    // console.log(date)
   },
   onShow: function onShow() {
     this.$uniUtilsApi.toHome(this);
@@ -399,18 +468,27 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
   },
   onUnload: function onUnload(e) {
     var isLogin = this.isLogin;
-    isLogin && this.unBindUserSocket();
-    isLogin && this.socketTask.close({
-      success: function success(res) {
-        // console.log('关闭成功', res)
-      },
-      fail: function fail(err) {
-        // console.log('关闭失败', err)
-      } });
+    var intervalID = this.intervalID;
+    if (isLogin) {
+      this.unBindUserSocket();
+      this.socketTask.close({
+        success: function success(res) {},
+        fail: function fail(err) {} });
 
+      clearInterval(intervalID);
+    }
   },
   methods: {
     init: function init(option) {
+      var socketTask = this.socketTask;
+      if (socketTask) {
+        this.unBindUserSocket();
+        this.socketTask.close({
+          success: function success(res) {},
+          fail: function fail(err) {} });
+
+        clearInterval(intervalID);
+      }
       this.deviceName = option.deviceName;
       this.deviceCore = option.deviceCore;
       this.sensorId = option.sensorId;
@@ -460,42 +538,92 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
         }
       });
     },
-    isShowAlarmModel: function isShowAlarmModel(e) {var
-
-      explainId =
-
-
-
-
-
-      e.explainId,name = e.name,less = e.less,greater = e.greater,equal = e.equal,wave = e.wave;
-      this.explainId = explainId;
-      this.explainName = name;
-      this.less = less;
-      this.greater = greater;
-      this.equal = equal;
-      this.wave = wave;
-      this.isShowAlarm = true;
+    showExplainWarn: function showExplainWarn() {
+      this.isShowWarnModel = true;
     },
-    setAlarmValue: function setAlarmValue(e) {var _this2 = this;
-      var sensorId = this.sensorId;
-      var explainId = this.explainId;var _e$detail$value =
-
-
-
-
-
-      e.detail.value,less = _e$detail$value.less,greater = _e$detail$value.greater,equal = _e$detail$value.equal,wave = _e$detail$value.wave;
-      deviceSensorExplainApi.setAlarmValue(this, explainId, sensorId, less, greater, equal, wave).then(function (res) {
+    unShowExplainWarn: function unShowExplainWarn() {
+      this.isShowWarnModel = false;
+    },
+    getExplainWarnList: function getExplainWarnList(value) {var _this2 = this;
+      var isShowWarnModel = this.isShowWarnModel;
+      deviceSensorExplainApi.getExplainWarnList(this, value).then(function (res) {
         if (res.code == '200') {
-          _this2.isShowAlarm = false;
-          _this2.$uniUtilsApi.showToast(_this2.i18n.setSuccess, 'none', 1000, false);
-          _this2.getRealTimeList();
+          var data = res.data;
+          var arr = [];
+          for (var i = 0; i < data.length; i++) {
+            var obj = {};var _data$i =
+
+
+
+
+
+
+            data[i],warnId = _data$i.warnId,less = _data$i.less,greater = _data$i.greater,equal = _data$i.equal,wave = _data$i.wave;
+            obj.warnId = warnId;
+            obj.less = less;
+            obj.greater = greater;
+            obj.equal = equal;
+            obj.wave = wave;
+            obj.checked = false;
+            arr.push(obj);
+          }
+          _this2.explainId = value;
+          _this2.explainWarnList = arr;
+          if (!isShowWarnModel) _this2.showExplainWarn();
         }
       });
     },
-    cancelSetAlarm: function cancelSetAlarm() {
-      this.isShowAlarm = false;
+    changeInput: function changeInput(e, index, name) {
+      var value = e.detail.value;
+      var explainWarnList = this.explainWarnList;
+      explainWarnList[index][name] = value;
+      this.explainWarnList = explainWarnList;
+    },
+    saveExplainWarn: function saveExplainWarn() {
+      var warnList = this.explainWarnList;
+      this.getDeleteAndInsertList(warnList);
+      this.unShowExplainWarn();
+    },
+    showCheck: function showCheck() {
+      this.isShowCheck = true;
+    },
+    changeCheck: function changeCheck(e) {
+      this.checkWarnList = e.detail.value;
+    },
+    deleteExplainWarn: function deleteExplainWarn() {
+      var explainId = this.explainId;
+      var list = this.checkWarnList;
+      var explainWarnList = this.explainWarnList.filter(function (value, index) {
+        return list.indexOf(index + '') === -1;
+      });
+      this.getDeleteAndInsertList(explainWarnList);
+      this.unDeleteExplainWarn();
+    },
+    unDeleteExplainWarn: function unDeleteExplainWarn() {
+      this.isShowWarnModel = false;
+      this.checkWarnList = [];
+      this.isShowCheck = false;
+    },
+    showAddWarnModel: function showAddWarnModel() {
+      this.isShowAddWarnModel = true;
+      this.isShowWarnModel = false;
+    },
+    unShowAddWarnModel: function unShowAddWarnModel(e) {
+      this.isShowAddWarnModel = false;
+    },
+    addExplainWarn: function addExplainWarn(e) {
+      var value = e.detail.value;
+      var explainWarnList = this.explainWarnList;
+      explainWarnList.unshift(value);
+      this.getDeleteAndInsertList(explainWarnList);
+      this.unShowAddWarnModel();
+    },
+    getDeleteAndInsertList: function getDeleteAndInsertList(warnList) {var _this3 = this;
+      var explainId = this.explainId;
+      deviceSensorExplainApi.getDeleteAndInsertList(this, explainId, warnList).then(function (res) {
+        var text = res.code == '200' ? _this3.i18n.setSuccess : _this3.i18n.setFail;
+        _this3.$uniUtilsApi.showToast(text, 'none', 1000, false);
+      });
     },
     deviceController: function deviceController() {
       var deviceName = this.deviceName;
@@ -505,17 +633,17 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
         url: "/pages/deviceNavigation/deviceNavigation?deviceName=".concat(deviceName, "&deviceCore=").concat(deviceCore, "&pageCur=").concat(pageCur) });
 
     },
-    updateData: function updateData() {var _this3 = this;
+    updateData: function updateData() {var _this4 = this;
       this.$uniUtilsApi.showLoading(this.i18n.loading, true);
       var deviceCore = this.deviceCore;
       var port = this.port;
       deviceControllerApi.saveSetting(this, deviceCore, undefined, 'getData', port, undefined).then(function (res) {
         if (res.code == '200') {
-          _this3.$uniUtilsApi.hideLoading();
-          _this3.$uniUtilsApi.showToast(_this3.i18n.updateSuccess, 'none', 1000, true); //'更新成功'
+          _this4.$uniUtilsApi.hideLoading();
+          _this4.$uniUtilsApi.showToast(_this4.i18n.updateSuccess, 'none', 1000, true); //'更新成功'
         } else {
-          _this3.$uniUtilsApi.hideLoading();
-          _this3.$uniUtilsApi.showToast(_this3.i18n.updateFail, 'none', 1000, true); //'更新失败'
+          _this4.$uniUtilsApi.hideLoading();
+          _this4.$uniUtilsApi.showToast(_this4.i18n.updateFail, 'none', 1000, true); //'更新失败'
         }
       });
     },
@@ -523,14 +651,11 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
       this.showErrorModal = false;
     },
     connectSocket: function connectSocket() {
-      var userId = uni.getStorageSync('userId');
-      var companyId = uni.getStorageSync('companyId');
-      var devKey = uni.getStorageSync('devKey');
       var accessToken = uni.getStorageSync('accessToken');
       var language = uni.getStorageSync('language');
       var sensorId = this.sensorId;
-      var socketUrl = "wss://core.ztn-tech.com/ws?userId=".concat(
-      userId, "&companyId=").concat(companyId, "&devKey=").concat(devKey, "&accessToken=").concat(accessToken, "&language=").concat(language, "&app=iot");
+      var socketUrl = "wss://core.ztn-tech.com/ws?accessToken=".concat(
+      accessToken, "&language=").concat(language, "&app=iot");
       this.socketTask = uni.connectSocket({
         url: socketUrl,
         header: {
@@ -542,25 +667,30 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
         } });
 
     },
-    openSocket: function openSocket() {var _this4 = this;
+    openSocket: function openSocket() {var _this5 = this;
       this.socketTask.onOpen(function (res) {
         // console.log("WebSocket连接正常打开中...！");
         // 注：只有连接正常打开中 ，才能正常成功发送消息
-        _this4.bindUserSocket();
+        var bindUserSocket = _this5.bindUserSocket;
+        var time = 1000 * 60 * 60 * 1;
+        var intervalID = setInterval(bindUserSocket, time);
+        _this5.intervalID = intervalID;
+        bindUserSocket();
         // 注：只有连接正常打开中 ，才能正常收到消息
-        _this4.socketTask.onMessage(function (res) {
-          _this4.handleSocketData(res.data);
+        _this5.socketTask.onMessage(function (res) {
+          _this5.handleSocketData(res.data);
         });
-        _this4.socketTask.onClose(function (res) {
-          // console.log("关闭回调--------------" + res.data);
+        _this5.socketTask.onClose(function (res) {
+          // console.log("关闭回调--------------" + res[reason]);
         });
+
       });
     },
     bindUserSocket: function bindUserSocket() {
       var sensorId = this.sensorId;
       var data = {
-        cmd: 'bindSensor',
-        param: sensorId };
+        cmd: 'bindRoom',
+        param: "iot:sensor:".concat(sensorId) };
 
       this.socketTask.send({
         data: JSON.stringify(data),
@@ -572,8 +702,8 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
     unBindUserSocket: function unBindUserSocket() {
       var sensorId = this.sensorId;
       var data = {
-        cmd: 'unBindSensor',
-        param: sensorId };
+        cmd: 'unBindRoom',
+        param: "iot:sensor:".concat(sensorId) };
 
       this.socketTask.send({
         data: JSON.stringify(data),
@@ -619,23 +749,16 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
       this.initStartTimestamp = this.startTimestamp;
       this.initEndTimestamp = this.endTimestamp;
     },
-    getListWithExplain: function getListWithExplain(e, first) {var _this5 = this;
+    getListWithExplain: function getListWithExplain(e, first) {var _this6 = this;
       first && (this.chartList = []);
       var sensorId = this.sensorId;
-      var initStartTimestamp = this.initStartTimestamp;
       var startTimestamp = this.startTimestamp;
       var endTimestamp = this.endTimestamp;
-      if (startTimestamp > initStartTimestamp || startTimestamp == initStartTimestamp) {
-        deviceSensorApi.getListWithExplain(this, sensorId, startTimestamp, endTimestamp).then(function (res) {
-          _this5.handleListWithExplain(e, first, res);
-        });
-      } else {
-        deviceSensorApi.getHistoryListWithExplain(this, sensorId, startTimestamp, endTimestamp).then(function (res) {
-          _this5.handleListWithExplain(e, first, res);
-        });
-      }
+      deviceSensorApi.getHistoryListWithExplain(this, sensorId, startTimestamp, endTimestamp).then(function (res) {
+        _this6.handleListWithExplain(e, first, res);
+      });
     },
-    handleListWithExplain: function handleListWithExplain(e, first, res) {var _this6 = this;
+    handleListWithExplain: function handleListWithExplain(e, first, res) {var _this7 = this;
       if (res.code == '200') {
         var ModelHeight = parseInt(this.ModelHeight);
         var fixedHeight = uni.getStorageSync('fixedHeight');
@@ -646,7 +769,7 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
             setTimeout(function () {
               uni.createSelectorQuery().select('#fixedBlock').boundingClientRect(function (e) {
                 var height = e == null ? 0 : e.height;
-                _this6.historyMarginTop = height + ModelHeight;
+                _this7.historyMarginTop = height + ModelHeight;
                 uni.setStorageSync('fixedHeight', height);
               }).exec();
             }, 0);
@@ -663,7 +786,7 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
         }
       }
     },
-    initChartData: function initChartData(options, data, first) {var _this7 = this;
+    initChartData: function initChartData(options, data, first) {var _this8 = this;
       this.$uniUtilsApi.hideLoading();
       var list = [];
       for (var i = 0; i < options.length; i++) {
@@ -682,7 +805,7 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
             if (obj[keyName] != undefined) {
               details.push({
                 time: newDate.getMonth() + 1 + '/' + newDate.getDate() + ' ' + newDate.getHours() + ':' + newDate.getMinutes(),
-                val: parseInt(obj[keyName]) });
+                val: Number(obj[keyName]) });
 
             }
           }
@@ -702,10 +825,10 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
       }
       this.chartList = list;
       this.$nextTick(function () {
-        var chartList = _this7.chartList;
+        var chartList = _this8.chartList;
         for (var _i = 0; _i < chartList.length; _i++) {
           var ref = chartList[_i].ref;
-          _this7.$refs[ref][0].refresh();
+          _this8.$refs[ref][0].refresh();
         }
       });
       this.endcreatedTime = createdTime;
@@ -813,17 +936,18 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
           data: timeValue,
           type: 'line',
           smooth: true,
-          markPoint: {
-            data: [{
-              type: 'max',
-              name: '最大值' },
-
-            {
-              type: 'min',
-              name: '最小值' }] },
-
-
-
+          // markPoint: {
+          // 	data: [{
+          // 			type: 'max',
+          // 			name: '最大值',
+          // 			valueIndex: 1
+          // 		},
+          // 		{
+          // 			type: 'min',
+          // 			name: '最小值'
+          // 		}
+          // 	],
+          // },
           markLine: {
             data: [{
               type: 'average',
@@ -860,7 +984,8 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
         this.startDate = e.detail.value;
         this.startTimestamp = timestamp;
         var selectItemHistory = this.selectItemHistory;
-        selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(selectItemHistory,
+        selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(
+        selectItemHistory,
         false);
       }
     },
@@ -876,7 +1001,8 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
         this.endDate = e.detail.value;
         this.endTimestamp = timestamp;
         var selectItemHistory = this.selectItemHistory;
-        selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(selectItemHistory,
+        selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(
+        selectItemHistory,
         false);
       }
     },
@@ -888,7 +1014,8 @@ var echarts = _interopRequireWildcard(__webpack_require__(/*! @/echarts/echarts.
       var endcreatedTime = this.endcreatedTime;
       this.startTimestamp = (parseInt(endcreatedTime) - timeList[index]).toString();
       var selectItemHistory = this.selectItemHistory;
-      selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(selectItemHistory,
+      selectItemHistory == null ? this.getListWithExplain(undefined, false) : this.getListWithExplain(
+      selectItemHistory,
       false);
     } },
 

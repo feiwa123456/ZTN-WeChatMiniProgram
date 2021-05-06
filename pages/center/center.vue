@@ -214,7 +214,7 @@
 			},
 			tapCurrentVersion: function() {
 				let currentVersion = this.i18n.currentVersion
-				let browserVersion = wx.getStorageSync('browserVersion') || '1.1.21'
+				let browserVersion = wx.getStorageSync('browserVersion') || '1.1.24'
 				let confirmText = this.i18n.confirm
 				let cancelText = this.i18n.cancel
 				this.$uniUtilsApi.showModal(currentVersion, browserVersion, false, confirmText, cancelText, (res) => {
@@ -331,6 +331,9 @@
 					// #endif
 					promise.then((res) => {
 						if (res.status) {
+							let openMessage = uni.getStorageSync('openMessage') || false
+							let closeMessageTxt = this.i18n.closeMessage
+							if(openMessage) this.$uniUtilsApi.unBindUserSocket(closeMessageTxt)
 							// #ifdef APP-PLUS
 							uni.removeStorageSync('password')
 							// #endif
@@ -346,11 +349,10 @@
 							uni.removeStorageSync('singleLogin')
 							uni.setStorageSync('isLogin', false)
 							this.isLogin = false
+							if(openMessage) this.$uniUtilsApi.closeSocket()
 							this.$uniUtilsApi.showToast(this.i18n.logoutSuccess, 'success', 1000, false)
 							this.$emit('unLogin')
 							this.getUnLoginDeviceStatusCount()
-							let openMessage = uni.getStorageSync('openMessage') || false
-							openMessage && this.$uniUtilsApi.unBindUserSocket(closeMessageTxt)
 						}
 					})
 				}, (res) => {

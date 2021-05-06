@@ -21,8 +21,16 @@ function getAreaDeviceNum(that, cityId, currentPage, pageSize) {
 	return promise
 }
 
-// 点击Marker获取设备列表
-function MarkerGetDeviceList(that, provinceId, cityId, productId, deviceStatus, currentPage, pageSize) {
+// 点击Marker获取所有设备列表
+function byMarkerGetDeviceList(that, provinceId,) {
+	let promise = that.$uniBaseRequest(that, '/device/belong/listDevice', {
+		provinceId: provinceId,
+	})
+	return promise
+}
+
+// 点击Marker获取分页设备列表
+function byMarkerPageGetDeviceList(that, provinceId, cityId, productId, deviceStatus, currentPage, pageSize) {
 	return pageGetDevice(that, {
 		provinceId: provinceId,
 		cityId: cityId,
@@ -61,7 +69,6 @@ function getDeviceStatusCount(that) {
 	return promise
 }
 
-// 获取类型列表
 function getProductTypeList(that, userId) {
 	let promise = that.$uniBaseRequest(that, '/device/belong/productNum', {
 		userId: userId
@@ -81,7 +88,8 @@ export {
 	getProvinceDeviceNum,
 	getCityDeviceNum,
 	getAreaDeviceNum,
-	MarkerGetDeviceList,
+	byMarkerGetDeviceList,
+	byMarkerPageGetDeviceList,
 	getDeviceList,
 	getProductTypeList,
 	getDeviceStatusCount,

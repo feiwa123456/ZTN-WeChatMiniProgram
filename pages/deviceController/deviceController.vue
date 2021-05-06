@@ -49,7 +49,7 @@
 							<view>
 								<view v-if="item.type=='custom' || item.type=='customProtocol'" class="margin-top-sm">
 									<!-- 自定义 -->
-									<form @submit="changeParam" :data-setting="item.setting" :data-port="item.port" :data-childport="item.childPort"
+									<form @submit="changeParam" :data-keyName="item.keyName" :data-port="item.port" :data-childport="item.childPort"
 									 data-change="custom">
 										<view class="flex align-center justify-end ">
 											<input :disabled="item.disabled" class=" margin-right-sm ztnCustom-custominput flex-sub " style="border: 1upx solid rgba(135, 153, 163, 0.5);margin-left:120upx"
@@ -64,7 +64,7 @@
 									<view id="fixedParam" class='flex align-center justify-end flex-wrap'>
 										<view v-for="(arrItem,index) in item.paramList" :key="index" style="margin-left:20upx">
 											<button :disabled="item.disabled" class="custom-button" size='mini' :class="[item.value == arrItem.value ? 'selectButton' : 'noSelectButton']"
-											 :style="{'--color': emphasizeColor}" @tap="changeParam" :data-setting="item.setting" :data-port="item.port"
+											 :style="{'--color': emphasizeColor}" @tap="changeParam" :data-keyName="item.keyName" :data-port="item.port"
 											 :data-childport="item.childPort" :data-value="arrItem.value" data-change="fixed">{{arrItem.name}}</button>
 										</view>
 									</view>
@@ -73,7 +73,7 @@
 									<!-- 开关量 -->
 									<view class="flex justify-end">
 										<switch :class="[theme == 'default'?'orange sm':'blue sm']" :disabled="item.disabled" :checked="item.value"
-										 @change="changeParam" :data-setting="item.setting" :data-port="item.port" :data-childport="item.childPort"
+										 @change="changeParam" :data-keyName="item.keyName" :data-port="item.port" :data-childport="item.childPort"
 										 data-change='switch'></switch>
 									</view>
 								</view>
@@ -81,7 +81,7 @@
 									<!-- 定时设置 -->
 									<view class='flex justify-end' style="margin-left:120upx">
 										<picker :disabled="item.disabled" class="flex-sub" mode="time" :value="item.value" @change="changeParam"
-										 :data-setting="item.setting" :data-port="item.port" :data-childport="item.childPort" data-change='timeSet'>
+										 :data-keyName="item.keyName" :data-port="item.port" :data-childport="item.childPort" data-change='timeSet'>
 											<view class="ztnCustom-custominput " style="border: 1upx solid rgba(135, 153, 163, 0.5)">{{item.value}}</view>
 										</picker>
 									</view>
@@ -89,7 +89,7 @@
 								<view v-else-if="item.type=='timeSlot'" class="margin-top-sm">
 									<!-- 时间段设置 -->
 									<view class='flex justify-end' style="margin-left:120upx">
-										<picker :disabled="item.disabled" class="flex-sub" mode="multiSelector" @change="changeParam" :data-setting="item.setting"
+										<picker :disabled="item.disabled" class="flex-sub" mode="multiSelector" @change="changeParam" :data-keyName="item.keyName"
 										 :data-port="item.port" :data-childport="item.childPort" data-change='periodTime' :value="item.multiIndex"
 										 :range="multiArray">
 											<view class="ztnCustom-custominput" style="border: 1upx solid rgba(135, 153, 163, 0.5)">{{item.value}}</view>
@@ -100,7 +100,7 @@
 									<!-- 无参数命令 -->
 									<view class='flex  justify-end'>
 										<button :disabled="item.disabled" class="cu-btn block" :style="[{backgroundColor:emphasizeColor}]" style="padding-left: 14px;padding-right: 14px;color: #fff"
-										 @tap="changeParam" :data-setting="item.setting" :data-port="item.port" :data-childport="item.childPort"
+										 @tap="changeParam" :data-keyName="item.keyName" :data-port="item.port" :data-childport="item.childPort"
 										 data-change='nop'>{{i18n.confirm}}</button>
 									</view>
 								</view>
@@ -109,12 +109,12 @@
 									<view class='flex justify-end' style="margin-left:120upx">
 										<slider :disabled="item.disabled" class="flex-sub" style="margin-right:0upx;margin-left:0upx" show-value max="100"
 										 min="0" step="5" :value="item.value" :activeColor="emphasizeColor" block-size="20" @change="changeParam"
-										 :data-setting="item.setting" :data-port="item.port" :data-childport="item.childPort" data-change="slider"></slider>
+										 :data-keyName="item.keyName" :data-port="item.port" :data-childport="item.childPort" data-change="slider"></slider>
 									</view>
 								</view>
 								<view v-else-if="item.type=='unKnow'">
 									<!-- 未知类型 -->
-									<form @submit="changeParam" :data-setting="item.setting" :data-port="item.port" :data-childport="item.childPort"
+									<form @submit="changeParam" :data-keyName="item.keyName" :data-port="item.port" :data-childport="item.childPort"
 									 data-change="custom">
 										<view class="flex align-center justify-end ">
 											<input :disabled="item.disabled" class="margin-right-sm ztnCustom-custominput flex-sub " style="border: 1upx solid rgba(135, 153, 163, 0.5);margin-left:120upx"
@@ -354,25 +354,25 @@
 			changeParam: function(e) {
 				let data = e.currentTarget.dataset
 				let change = data.change
-				let nowSetting = data.setting || ''
-				let nowPort = data.port || ''
-				let nowChildPort = data.childport || ''
+				let keyName = data.keyname || ''
+				let port = data.port || ''
+				let childPort = data.childport || ''
 				switch (change) {
 					case 'custom':
 						let customValue = e.detail.value.custom
-						this.saveSetting(customValue, nowSetting, nowPort, nowChildPort)
+						this.saveSetting(customValue, keyName, port, childPort)
 						break;
 					case 'fixed':
 						let fixedValue = data.value
-						this.saveSetting(fixedValue, nowSetting, nowPort, nowChildPort)
+						this.saveSetting(fixedValue, keyName, port, childPort)
 						break;
 					case 'switch':
 						let switchValue = e.detail.value ? '1' : '0'
-						this.saveSetting(switchValue, nowSetting, nowPort, nowChildPort)
+						this.saveSetting(switchValue, keyName, port, childPort)
 						break;
 					case 'timeSet':
 						let timeSetValue = e.detail.value
-						this.saveSetting(timeSetValue, nowSetting, nowPort, nowChildPort)
+						this.saveSetting(timeSetValue, keyName, port, childPort)
 						break;
 					case 'periodTime':
 						let index = e.detail.value;
@@ -381,22 +381,22 @@
 						let thour = this.multiArray[2][index[2]]
 						let tminute = this.multiArray[3][index[3]]
 						let periodTime = hour + ':' + minute + ' / ' + thour + ':' + tminute
-						this.saveSetting(periodTime, nowSetting, nowPort, nowChildPort)
+						this.saveSetting(periodTime, keyName, port, childPort)
 						break;
 					case 'nop':
-						this.saveSetting(null, nowSetting, nowPort, nowChildPort)
+						this.saveSetting(null, keyName, port, childPort)
 						break;
 					case 'slider':
 						let sliderValue = e.detail.value;
-						this.saveSetting(sliderValue, nowSetting, nowPort, nowChildPort)
+						this.saveSetting(sliderValue, keyName, port, childPort)
 						break;
 					default:
 				}
 			},
-			saveSetting: function(value, setting, port, childPort) {
+			saveSetting: function(value, keyName, port, childPort) {
 				this.$uniUtilsApi.showLoading(this.i18n.loading, true)
 				let deviceCore = this.deviceCore
-				deviceControllerApi.saveSetting(this, deviceCore, value, setting, port, childPort).then((res) => {
+				deviceControllerApi.saveSetting(this, deviceCore, value, keyName, port, childPort).then((res) => {
 					if (res.code == '200') {
 						this.$uniUtilsApi.hideLoading()
 						this.$uniUtilsApi.showToast(this.i18n.setSuccess, 'none', 1000, true)

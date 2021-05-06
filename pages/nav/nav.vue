@@ -57,6 +57,7 @@
 				let pageCur = this.pageCur
 				this.pageCur = ''
 				this.$nextTick(() => {
+					this.connectSocket()
 					this.pageCur = pageCur
 					this.fromLoginBack = false
 					this.refresh = false
@@ -96,10 +97,6 @@
 				]
 			},
 			init: function() {
-				let openMessageTxt = this.i18n.openMessage
-				let closeMessageTxt = this.i18n.closeMessage
-				this.$uniUtilsApi.connectSocket()
-				this.$uniUtilsApi.openSocket(openMessageTxt, closeMessageTxt)
 				let openid = uni.getStorageSync('openid')
 					//#ifdef MP-WEIXIN
 					!openid ? this.WEIXINGetOpenid() : (this.openid = openid, this.useOpenidLogin())
@@ -228,6 +225,7 @@
 								uni.setStorageSync('isLogin', true)
 								this.isLogin = true
 								this.lang(language)
+								this.connectSocket()
 								break;
 							case '201':
 								uni.setStorageSync('isLogin', false)
@@ -242,10 +240,16 @@
 					}
 				})
 			},
+			connectSocket:function(){
+				let openMessageTxt = this.i18n.openMessage
+				let closeMessageTxt = this.i18n.closeMessage
+				this.$uniUtilsApi.connectSocket()
+				this.$uniUtilsApi.openSocket(this,openMessageTxt, closeMessageTxt)
+			},
 			lang: function(language) {
 				this.$i18n.locale = language
 				this.languageChange()
-			}
+			},
 		},
 		components: {
 			homeComponent,

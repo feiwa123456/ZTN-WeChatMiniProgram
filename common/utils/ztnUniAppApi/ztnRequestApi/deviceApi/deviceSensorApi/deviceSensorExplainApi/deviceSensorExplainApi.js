@@ -17,7 +17,24 @@ function setAlarmValue(that, explainId, sensorId, less, greater, equal, wave) {
 	return promise
 }
 
+function getExplainWarnList(that, explainId) {
+	let promise = that.$uniBaseRequest(that, '/device/explain/config/warn/listWithTemplate', {
+		explainId: explainId
+	})
+	return promise
+}
+
+function getDeleteAndInsertList(that, explainId, warnList) {
+	let promise = that.$uniBaseRequest(that, '/device/explain/config/warn/deleteAndInsertList', {
+		explainId: explainId,
+		warnList: warnList
+	})
+	return promise
+}
+
 export {
 	getRealTimeList,
-	setAlarmValue
+	setAlarmValue,
+	getExplainWarnList,
+	getDeleteAndInsertList
 }
